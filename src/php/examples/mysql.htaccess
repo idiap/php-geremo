@@ -1,0 +1,25 @@
+## Authentication and Authorization
+AuthType Basic
+AuthName "Authentication Required"
+
+# Basic Authentication
+# (required for proper interaction with 'mod_auth_mysql')
+AuthBasicProvider file
+AuthBasicAuthoritative Off
+AuthUserFile /dev/null
+
+# MySQL Authentication
+# (requires 'mod_auth_mysql')
+Auth_MySQL On
+Auth_MySQL_Authoritative On
+Auth_MySQL_Host localhost
+Auth_MySQL_User geremo
+Auth_MySQL_Password *******
+Auth_MySQL_DB geremo
+Auth_MySQL_Password_Table tb_GEREMO_Account
+Auth_MySQL_Username_Field username
+Auth_MySQL_Password_Field password
+Auth_MySQL_Encryption_Types SHA1Sum
+
+# Authorization
+Require valid-user

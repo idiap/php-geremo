@@ -1,0 +1,59 @@
+#!/bin/bash
+#23456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
+
+# Arguments
+[ $# -lt 4 ] && cat <<EOF && exit
+USAGE: ${0##*/} <pkg-name> <pkg-title> <dest-dir> <src-php-dir> [<src-pkg-dir>]
+
+SYNOPSIS:
+ Create the HTML documentation for the PHP source code, using 'phpdoc'
+ (see PHP::PEAR 'phpDocumentor')
+
+EOF
+
+# Arguments
+DOC_PACKAGE="$1"
+DOC_TITLE="$2"
+DOC_DEST="$3"
+DOC_SRC_PHP="$4"
+DOC_SRC_PKG="$5"
+
+# Extract full command path
+pushd "$(dirname $0)" >/dev/null && DOC_CMDPATH="$(pwd)"; popd >/dev/null
+
+# Extract full source path
+[ ! -d "${DOC_SRC_PHP}" ] && echo "ERROR: Invalid PHP source directory (${DOC_SRC_PHP})" >&2 && exit 1
+pushd "${DOC_SRC_PHP}" >/dev/null && DOC_SRC_PHP="$(pwd)"; popd >/dev/null
+if [ -n "${DOC_SRC_PKG}" ]; then
+  [ ! -d "${DOC_SRC_PKG}" ] && echo "ERROR: Invalid documentation source directory (${DOC_SRC_PKG})" >&2 && exit 1
+  pushd "${DOC_SRC_PKG}" >/dev/null && DOC_SRC_PKG="$(pwd)"; popd >/dev/null
+fi
+
+# phpDocumentor settings
+PHPDOC="${DOC_CMDPATH}/phpdoc"
+PHPDOC_PACKAGE="${DOC_PACKAGE}"
+PHPDOC_TITLE="${DOC_TITLE}"
+PHPDOC_SRC="${DOC_SRC_PHP}"
+[ -n "${DOC_SRC_PKG}" ] && PHPDOC_SRC="${PHPDOC_SRC},${DOC_SRC_PKG}"
+PHPDOC_IGNORE="*/js/,*/css/,*/img/"
+PHPDOC_DEST="${DOC_DEST}"
+PHPDOC_FORMAT=HTML:frames:DOM/earthli
+PHPDOC_OPTIONS="-s on" # -s on -pp on | egrep -i '^(error|warning)'
+
+# Check and clean output directory
+echo "INFO: Creating documention (${DOC_DEST}/...)"
+[ -z "${PHPDOC_DEST}" ] && echo "ERROR: Output directory is not set" >&2 && exit 1
+[ ! -e "${PHPDOC_DEST}" ] && mkdir -p "${PHPDOC_DEST}"
+[ ! -d "${PHPDOC_DEST}" ] && echo "ERROR: Failed to create output directory (${PHPDOC_DEST})" >&2 && exit 1
+rm -rf "${PHPDOC_DEST}"/*
+
+# Create documention
+${PHPDOC} -t "${PHPDOC_DEST}" -i ${PHPDOC_IGNORE} -d "${PHPDOC_SRC}" -o "${PHPDOC_FORMAT}" -ti "${PHPDOC_TITLE}" -dn "${PHPDOC_PACKAGE}" ${PHPDOC_OPTIONS}
+
+# Copy images
+if [ -n "${DOC_SRC_PKG}" ]; then
+  IFS=$'\n'; for image in $(find "${DOC_SRC_PKG}" -type f \( -iname "*.png" -o -iname "*.gif" -o -iname "*.jpg" \)); do
+    cp -v "${image}" "${PHPDOC_DEST}/${image#${DOC_SRC_PKG}/}"
+  done
+fi
+

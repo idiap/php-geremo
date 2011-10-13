@@ -1,0 +1,16 @@
+The PHP Generic Registration Module (PHP-GEREMO) is free software:
+you can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, Version 3.
+
+The PHP Generic Registration Module (PHP-GEREMO) is distributed in the hope
+that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License (LICENSE.TXT) for more details.
+
+The PHP Generic Registration Module (PHP-GEREMO) includes all resources which
+contain the mention "PHP Generic Registration Module (PHP-GEREMO)" in their
+preamble.
+
+Other resources are (and must be) used according to their original license,
+which is (should be made) available from their respective author.
+

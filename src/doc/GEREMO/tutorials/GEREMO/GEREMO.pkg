@@ -1,0 +1,204 @@
+<refentry id="{@id}">
+
+<refnamediv>
+<refname>PHP Generic Registration Module (PHP-GEREMO)</refname>
+<refpurpose>An independent and foolproof add-on to implement &quot;double opt-in&quot; users registration</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<author>
+Cedric Dufour, Idiap Research Institute
+<authorblurb>{@link http://www.idiap.ch/software/php-geremo http://www.idiap.ch/software/php-geremo}</authorblurb>
+</author>
+</refsynopsisdiv>
+
+<graphic fileref="GEREMO.png" />
+
+{@toc}
+
+
+<refsect1 id="{@id whatis}">
+<title>What is PHP-GEREMO ?</title>
+<para>The <firstterm>PHP Generic Registration Module</firstterm> is a PHP class which allows to implement <emphasis>&quot;double opt-in&quot; users registration</emphasis> as an independent and foolproof add-on to any existing application.</para>
+<para>Upon completion of the registration process and once their credentials (and optional details) stored in the configurable backend, users can be authenticated and authorized using the web server's ad-hoc mechanisms - e.g. <literal>Apache</literal>'s <literal>mod_auth_file</literal> or <literal>mod_auth_mysql</literal> - and gain access to the underlying application.</para>
+<para>The idea behind this module is to:</para>
+<itemizedList>
+<listitem>use the web server authentication and authorization capacities to control access to the underlying application (be it in <literal>PHP</literal>, <literal>ASP</literal>, <literal>Java</literal>, <literal>Perl</literal>, <literal>Python</literal>, etc.) and thus prevent potential application-level vulnerabilities to be exploited by unauthenticated agents;</listitem>
+<listitem>provide developers a way to quickly add a registration process to any existing application;</listitem>
+<listitem>do so as an independent and foolproof add-on, which focus on the quality and the security of the registration process.</listitem>
+</itemizedList>
+</refsect1>
+
+
+<refsect1 id="{@id specs}">
+<title>Specifications</title>
+
+<refsect2 id="{@id specs_depends}">
+<title>Dependencies</title>
+<itemizedList>
+<listitem>[REQUIRED] <literal>PHP 5.3</literal> or later (it may work on earlier PHP 5 versions; this is untested though)</listitem>
+<listitem>[REQUIRED] PHP <literal>mhash</literal> extension</listitem>
+<listitem>[REQUIRED] PHP <literal>mcrypt</literal> extension</listitem>
+<listitem>[REQUIRED] PHP <literal>PEAR::Text_CAPTCHA</literal> extension (and dependencies)</listitem>
+<listitem>[REQUIRED] PHP <literal>PEAR::Mail</literal> and <literal>PEAR::Mail_Mime</literal> extensions (and dependencies)</listitem>
+<listitem>[OPTIONAL] PHP <literal>PEAR::MDB2</literal> extension (and dependencies); required only when using a SQL backend</listitem>
+</itemizedList>
+</refsect2>
+
+<refsect2 id="{@id specs_features}">
+<title>Features</title>
+<itemizedList>
+<listitem><emphasis>captcha</emphasis>-protected registration request</listitem>
+<listitem>code-protected registration confirmation (<emphasis>&quot;double opt-in&quot;</emphasis>); code is sent by e-mail</listitem>
+<listitem>required user's data: <emphasis><literal>email</literal></emphasis>, <emphasis><literal>password</literal></emphasis></listitem>
+<listitem>optional (configurable) user's data: <literal>title</literal>, <literal>firstname</literal>, <literal>lastname</literal>, <literal>company</literal>, <literal>jobtitle</literal>, <literal>street</literal>, <literal>street2</literal>, <literal>pobox</literal>, <literal>city</literal>, <literal>zipcode</literal>, <literal>state</literal>, <literal>country</literal>, <literal>phone</literal>, <literal>fax</literal></listitem>
+<listitem>registering user's <emphasis>e-mail whitelist/blacklist</emphasis></listitem>
+<listitem><emphasis>password encryption</emphasis> (to match the web server's authentication requirements)</listitem>
+<listitem><emphasis>dynamic 24h-rotated code keys</emphasis> (prevent brute-force attacks)</listitem>
+<listitem>registration process <emphasis>state tracking</emphasis> (prevent replay attacks)</listitem>
+<listitem>registration backends: <emphasis><literal>htpasswd</literal></emphasis> and <emphasis><literal>sql</literal></emphasis> (compatible with Apache's <literal>mod_auth_file</literal>, <literal>mod_auth_mysql</literal> and <literal>mod_auth_pgsql</literal>)</listitem>
+<listitem><emphasis>localized and customizable</emphasis> HTML, e-mail templates and text messages</listitem>
+</itemizedList>
+</refsect2>
+
+</refsect1>
+
+
+<refsect1 id="{@id licence}">
+<title>Licensing</title>
+<para>PHP-GEREMO is distributed under the <emphasis>GNU General Public Licence (GPL) Version 3</emphasis>. The PHP Generic Registration Module includes all resources which contain the mention <literal>PHP Generic Registration Module (PHP-GEREMO)</literal> in their documentation and licensing preamble.</para>
+<para>Other Open Source resources may come bundled with PHP-GEREMO release packaging; they are (and must be) used according to their original licence (look for copyright-related files in the folder hierarchy).</para>
+</refsect1>
+
+
+<refsect1 id="{@id download}">
+<title>Downloading</title>
+<para>{@link http://www.idiap.ch/software/php-geremo/download/ download tree...}</para>
+</refsect1>
+
+
+<refsect1 id="{@id install}">
+<title>Installation</title>
+<para><emphasis>WARNING: PHP-GEREMO is actively maintained on Linux. It has not been tested on Windows.</emphasis></para>
+
+<refsect2 id="{@id install_tarball}">
+<title>From tarball (using PHP PEAR)</title>
+<screen>
+<![CDATA[
+$ umask 027
+$ tar -xjf php-geremo.tar.bz2
+$ pear install src/php/packages.xml
+$ chown -R root.www-data /usr/share/php/GEREMO/ \
+                         /usr/share/php/data/GEREMO/ \
+                         /usr/share/php/docs/GEREMO/
+]]>
+</screen>
+</refsect2>
+
+<refsect2 id="{@id install_debian}">
+<title>Debian package</title>
+<screen>
+<![CDATA[
+$ apt-get install php-geremo.deb
+]]>
+</screen>
+</refsect2>
+
+</refsect1>
+
+
+<refsect1 id="{@id usage}">
+<title>Usage</title>
+<para><emphasis>NOTE:</emphasis> We will assume:</para>
+<itemizedList>
+<listitem>the web server is <literal>Apache</literal></listitem>
+<listitem>a password-protected application located at <literal>https://example.org/authreqd/</literal> (corresponding to the <literal>/var/www/authreqd/</literal> directory)</listitem>
+<listitem>PHP-GEREMO is located at <literal>https://example.org/register/</literal> (corresponding to the <literal>/var/www/register/</literal> directory)</listitem>
+</itemizedList>
+
+<refsect2 id="{@id usage_1}">
+<title>[MUST] Create PHP-GEREMO's (dynamic) data directory</title>
+<screen>
+<![CDATA[
+$ umask 007
+$ mkdir -p /var/lib/geremo/data
+$ chown -R root.www-data /var/lib/geremo/data
+]]>
+</screen>
+<para>PHP-GEREMO's <literal>data_dir</literal> configuration setting must be set accordingly.</para>
+</refsect2>
+
+<refsect2 id="{@id usage_2}">
+<title>[OPTIONAL] Create and customize PHP-GEREMO's (localized) resources directory</title>
+<screen>
+<![CDATA[
+$ umask 027
+$ cp -r /usr/share/php/GEREMO/resources /var/lib/geremo/.
+$ chown -R root.www-data /var/lib/geremo/resources
+]]>
+</screen>
+<para>PHP-GEREMO's <literal>resources_dir</literal> configuration setting must be set accordingly.</para>
+</refsect2>
+
+<refsect2 id="{@id usage_3}">
+<title>[MUST] Create and customize PHP-GEREMO's configuration file</title>
+<screen>
+<![CDATA[
+$ umask 027
+$ mkdir -p /etc/php5/geremo
+$ cp /usr/share/php/GEREMO/samples/config.php /etc/php5/geremo/config.php
+$ chown -R root.www-data /etc/php5/geremo
+]]>
+</screen>
+<para>Apache's <literal>PHP_GEREMO_CONFIG</literal> environment variable must be set accordingly (see below).</para>
+</refsect2>
+
+<refsect2 id="{@id usage_4a}">
+<title>[MUST] Create and customize PHP-GEREMO's HTML document file</title>
+<screen>
+<![CDATA[
+$ umask 027
+$ cp /usr/share/php/GEREMO/samples/index.php /var/www/register/index.php
+$ chown root.www-data /var/www/register/index.php
+]]>
+</screen>
+<para>Feel free to modify this file's HTML content to match your visual needs. Do not modify its PHP code though (unless you know what you're doing)!</para>
+</refsect2>
+
+<refsect2 id="{@id usage_4b}">
+<title>[MUST] Configure PHP-GEREMO's HTML document access</title>
+<screen>
+<![CDATA[
+$ umask 027
+$ echo 'setenv PHP_GEREMO_CONFIG /etc/php5/geremo/config.php' > /var/www/register/.htaccess
+$ chown root.www-data /var/www/register/.htaccess
+]]>
+</screen>
+</refsect2>
+
+<refsect2 id="{@id usage_5}">
+<title>[OPTIONAL] Create PHP-GEREMO's SQL backend (or use an existing one)</title>
+<para><emphasis>SEE:</emphasis> /usr/share/php/GEREMO/samples/*.sql</para>
+</refsect2>
+
+<refsect2 id="{@id usage_6}">
+<title>[MUST] Configure Apache's authentication and authorization</title>
+<screen>
+<![CDATA[
+$ BACKEND='<backend>' # adapt to match your setup
+$ umask 027
+$ cp /usr/share/php/GEREMO/samples/${BACKEND}.htaccess /var/www/authreqd/.htaccess
+$ chown root.www-data /var/www/authreqd/.htaccess
+]]>
+</screen>
+</refsect2>
+
+</refsect1>
+
+
+<refsect1 id="{@id documentation}">
+<title>Further documentation</title>
+<para>The full documentation of PHP-GEREMO is available - in (phpDocumentor-generated) HTML format and including source code - at {@link http://www.idiap.ch/php-geremo/documentation/ http://www.idiap.ch/php-geremo/documentation/}.</para>
+</refsect1>
+
+</refentry> 

@@ -1,0 +1,93 @@
+PHP Generic Registration Module (PHP-GEREMO)
+============================================
+
+NOTE: For the sake of clarity, we will assume a Linux (Debian) environment.
+
+
+INSTALL
+-------
+
+NOTE: We will assume a previously working Apache/PHP/PEAR setup.
+
+1.
+
+[MUST] Install PHP-GEREMO (using PHP PEAR):
+
+   BASH: tar -xjf php-geremo.tar.bz2
+   BASH: pear install src/php/packages.xml
+
+2.
+
+[OPTIONAL] Build PHP-GEREMO documentation (using PhpDocumentor):
+
+   BASH: pear install -o PhpDocumentor
+   BASH: tar -xjf php-geremo.tar.bz2
+   BASH: DOC_DIR='<documentation-output-directory>'
+   BASH: ./bin/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/php src/doc
+
+
+USAGE
+-----
+
+NOTE: For the sake of consistency, we will assume:
+ - a password-protected application located at 'https://example.org/authreqd/'
+   (corresponding to '/var/www/authreqd/')
+ - the PHP Generic Registration Module located at 'https://example.org/register/'
+   (corresponding to '/var/www/register/')
+
+1.
+
+[MUST] Create PHP-GEREMO's (dynamic) data directory:
+
+   BASH: mkdir -p /var/lib/geremo/data
+
+   (consequently, PHP-GEREMO's 'data_dir' configuration setting shall be set to
+   '/var/lib/geremo/data')
+
+2.
+
+[OPTIONAL] Create and customize PHP-GEREMO's (localized) resources directory:
+
+   BASH: cp -r /usr/share/php/GEREMO/resources /var/lib/geremo/.
+
+   (consequently, PHP-GEREMO's 'resources_dir' configuration setting shall be set
+   to '/var/lib/geremo/resources')
+
+3.
+
+[MUST] Create and customize PHP-GEREMO's configuration file:
+
+   BASH: mkdir -p /etc/php5/geremo
+   BASH: cp /usr/share/php/GEREMO/samples/config.php /etc/php5/geremo/config.php
+
+   (consequently, Apache's 'PHP_GEREMO_CONFIG' environment variable shall be set
+   to '/etc/php5/geremo/config.php')
+
+4.a.
+
+[MUST] Create and customize PHP-GEREMO's HTML document file:
+
+   BASH: cp /usr/share/php/GEREMO/samples/index.php /var/www/register/index.php
+
+   (feel free to modify the HTML content to match your visual needs)
+
+4.b.
+
+[MUST] Configure PHP-GEREMO's HTML document access:
+
+   BASH: echo "setenv PHP_GEREMO_CONFIG /etc/php5/geremo/config.php" \
+                                      > /var/www/register/.htaccess
+
+5.
+
+[OPTIONAL] Create PHP-GEREMO's SQL backend:
+
+   SEE: /usr/share/php/GEREMO/samples/*.sql
+
+6.
+
+[MUST] Enable Apache's authentication/authorization:
+
+   BASH: BACKEND='<backend>' # adapt to match your setup
+   BASH: cp /usr/share/php/GEREMO/samples/${BACKEND}.htaccess \
+            /var/www/authreqd/.htaccess

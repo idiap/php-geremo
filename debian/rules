@@ -1,0 +1,79 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+DEB_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+DEB_NOEPOCH_VERSION := $(shell echo $(DEB_VERSION) | cut -d: -f2-)
+DEB_UPSTREAM_VERSION := $(shell echo $(DEB_NOEPOCH_VERSION) | sed 's/-[^-]*$$//')
+
+PEAR ?= /usr/bin/pear
+pear_pkg = src/php
+package = php-geremo
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: build-stamp
+
+build-stamp: configure-stamp 
+	dh_testdir
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	dh_clean build-stamp configure-stamp
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+	# Add here commands to install the package into debian/package.
+	cp package.xml $(pear_pkg)/package.xml
+	$(PEAR) install -f -n -R debian/$(package) $(pear_pkg)/package.xml
+	rm -f debian/$(package)/usr/share/php/.filemap
+	rm -f debian/$(package)/usr/share/php/.lock
+	rm -rf debian/$(package)/usr/share/php/.channels
+	rm -rf debian/$(package)/usr/share/php/.depdblock
+	rm -rf debian/$(package)/usr/share/php/.depdb
+	rm -rf debian/$(package)/usr/share/php/.registry/.channel.pecl.php.net
+	rm -rf debian/$(package)/usr/share/php/.registry/.channel.__uri
+	rm -rf debian/$(package)/tmp
+
+	# Remove unwanted files
+	rm -rf debian/$(package)/usr/share/php/data/GEREMO/data
+
+# Build architecture-dependent files here.
+binary-arch: build install
+# We have nothing to do by default.
+
+# Build architecture-independent files here.
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installexamples
+	dh_installchangelogs 
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
+
+build-orig-tarball:
+	tar -czf ../php-geremo_${DEB_UPSTREAM_VERSION}.orig.tar.gz src bin package.xml .git .gitignore
+
+build-release-tarball:
+	tar -cjf ../php-geremo-${DEB_UPSTREAM_VERSION}.tar.bz2 src bin
+

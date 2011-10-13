@@ -1,0 +1,14 @@
+3rd-party Resources Copyright
+=============================
+
+
+Captcha TTF font (captcha.ttf)
+------------------------------
+
+The defaut font provided in this directory has been downloaded from
+ http://www.webpagepublicity.com/free-fonts/c/Chinese%20Brush.ttf
+The corresponding usage terms are: "Below are over 6500 free fonts you can
+download to your computer and use for free. These are all totally free TTF
+fonts made to work with any PC or Windows Operating System. Use them at your
+own free will." ( http://www.webpagepublicity.com/free-fonts.html )
+

@@ -1,0 +1,25 @@
+## Authentication and Authorization
+AuthType Basic
+AuthName "Authentication Required"
+
+# Basic Authentication
+# (required for proper interaction with 'mod_auth_pgsql')
+AuthBasicProvider file
+AuthBasicAuthoritative Off
+AuthUserFile /dev/null
+
+# PgSQL Authentication
+# (requires 'mod_auth_mysql')
+Auth_PG_authoritative On
+Auth_PG_host localhost
+Auth_PG_user geremo
+Auth_PG_pwd ********
+Auth_PG_database geremo
+Auth_PG_pwd_table tb_GEREMO_Account
+Auth_PG_uid_field username
+Auth_PG_pwd_field password
+Auth_PG_encrypted On
+Auth_PG_hash_type MD5
+
+# Authorization
+Require valid-user
