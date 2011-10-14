@@ -17,13 +17,15 @@ $sView = $oGEREMO->getFormData( 'VIEW' );
 <?php } ?>
 
 <?php if( $sView == 'default' ) { ?>
-<H2>Déjà enregistré ?</H2>
-<P>Veuillez s'il-vous-plaît poursuivre vers le <A HREF="<?php echo $oGEREMO->getLoginURL(); ?>">login</A>.</P>
-<H2>Pas encore enregistré ?</H2>
+<H2>Enregistrement nécessaire</H2>
+<P>Vous devez être enregistré pour accéder à cette resource.</P>
+<H3>Déjà enregistré ?</H3>
+<P>Poursuivez s'il-vous-plaît vers le <A HREF="<?php echo $oGEREMO->getLoginURL(); ?>">login</A>.</P>
+<H3>Pas encore enregistré ?</H3>
 <P>Veuillez s'il-vous-plaît vous <A HREF="?do=request">enregistrer</A>.</P>
-<H2>Mot de passe oublié ?</H2>
+<H3>Mot de passe oublié ?</H3>
 <P>Veuillez s'il-vous-plaît vous <A HREF="?do=request">enregistrer</A>, en utilisant votre adresse e-mail déjà enregistrée (vous pourrez alors changer le mot de passe associé à votre compte).</P>
-<H2>Changer de langue</H2>
+<H3>Changer de langue</H3>
 <DIV CLASS="form">
 <?php echo $oGEREMO->getFormHtml( 'locale' ); ?>
 </DIV>

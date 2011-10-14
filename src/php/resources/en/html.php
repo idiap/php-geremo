@@ -17,13 +17,15 @@ $sView = $oGEREMO->getFormData( 'VIEW' );
 <?php } ?>
 
 <?php if( $sView == 'default' ) { ?>
-<H2>Already Registered ?</H2>
+<H2>Registration Required</H2>
+<P>You need to be registered to access this resource.</P>
+<H3>Already Registered ?</H3>
 <P>Please proceed to <A HREF="<?php echo $oGEREMO->getLoginURL(); ?>">login</A>.</P>
-<H2>Not Yet Registered ?</H2>
+<H3>Not Yet Registered ?</H3>
 <P>Please proceed to <A HREF="?do=request">register</A>.</P>
-<H2>Forgotten Your Password ?</H2>
+<H3>Password Forgotten ?</H3>
 <P>Please proceed to <A HREF="?do=request">register</A>, using your already registered e-mail address (you will then be able to set a new password for your account).</P>
-<H2>Switch Language</H2>
+<H3>Switch Language</H3>
 <DIV CLASS="form">
 <?php echo $oGEREMO->getFormHtml( 'locale' ); ?>
 </DIV>
