@@ -45,6 +45,7 @@ Features
  - required user's data: email, password
  - optional (configurable) user's data: title, firstname, lastname, company, jobtitle, street, street2, pobox, city, zipcode, state, country, phone, fax
  - registering user's e-mail whitelist/blacklist
+ - registering user's password strength verification
  - password encryption (to match the web server's authentication requirements)
  - dynamic 24h-rotated code keys (prevent brute-force attacks)
  - registration process state tracking (prevent replay attacks)

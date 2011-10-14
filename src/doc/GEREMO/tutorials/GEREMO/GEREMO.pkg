@@ -53,6 +53,7 @@ Cedric Dufour, Idiap Research Institute
 <listitem>required user's data: <emphasis><literal>email</literal></emphasis>, <emphasis><literal>password</literal></emphasis></listitem>
 <listitem>optional (configurable) user's data: <literal>title</literal>, <literal>firstname</literal>, <literal>lastname</literal>, <literal>company</literal>, <literal>jobtitle</literal>, <literal>street</literal>, <literal>street2</literal>, <literal>pobox</literal>, <literal>city</literal>, <literal>zipcode</literal>, <literal>state</literal>, <literal>country</literal>, <literal>phone</literal>, <literal>fax</literal></listitem>
 <listitem>registering user's <emphasis>e-mail whitelist/blacklist</emphasis></listitem>
+<listitem>registering user's <emphasis>password strength verification</emphasis></listitem>
 <listitem><emphasis>password encryption</emphasis> (to match the web server's authentication requirements)</listitem>
 <listitem><emphasis>dynamic 24h-rotated code keys</emphasis> (prevent brute-force attacks)</listitem>
 <listitem>registration process <emphasis>state tracking</emphasis> (prevent replay attacks)</listitem>
