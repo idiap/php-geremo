@@ -30,7 +30,7 @@ The idea behind this module is to:
  <date>2011-10-11</date>
  <time>14:45:00</time>
  <version>
-  <release>1.0.0RC1</release>
+  <release>1.0.0RC2</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -64,12 +64,14 @@ The idea behind this module is to:
     <file name="captcha.ttf" role="data" />
     <dir name="en">
      <file name="html.php" role="data" />
-     <file name="email.tpl" role="data" />
+     <file name="verification_code.email.tpl" role="data" />
+     <file name="registration_notice.email.tpl" role="data" />
     </dir>
     <dir name="fr">
      <file name="text.php" role="data" />
      <file name="html.php" role="data" />
-     <file name="email.tpl" role="data" />
+     <file name="verification_code.email.tpl" role="data" />
+     <file name="registration_notice.email.tpl" role="data" />
     </dir>
    </dir>
    <dir name="data">
@@ -114,7 +116,7 @@ The idea behind this module is to:
  <changelog>
   <release>
    <version>
-    <release>1.0.0RC1</release>
+    <release>1.0.0RC2</release>
     <api>1.0.0</api>
    </version>
    <stability>
