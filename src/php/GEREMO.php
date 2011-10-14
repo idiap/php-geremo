@@ -539,7 +539,7 @@ class GEREMO
         $amFormData['verification_slot'] = $iKeySlot;
 
         // Send registration e-mail
-        $sTemplate = file_get_contents( $this->amCONFIG['resources_dir'].'/'.$this->getCurrentLocale().'/email.tpl' );
+        $sTemplate = file_get_contents( $this->amCONFIG['resources_dir'].'/'.$this->getCurrentLocale().'/verification_code.email.tpl' );
         if( $sTemplate === false )
         {
           trigger_error( '['.__METHOD__.'] Failed to load e-mail template', E_USER_WARNING );
