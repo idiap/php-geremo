@@ -41,6 +41,9 @@
 #            parameter to be overriden!
 #$_CONFIG['email_sender_address'] = ''; // string
 
+# E-mail address(es) to send registration notices to.
+#$_CONFIG['email_registration_notice_address'] = ''; // string
+
 # Registration/Authentication backend. Supported backends are:
 #  'htpasswd': Apache's 'htpasswd' file
 #  'sql': SQL database (see 'sql_*' parameters below)

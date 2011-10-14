@@ -87,6 +87,7 @@ class GEREMO
     $_CONFIG['captcha_height'] = 120;
     $_CONFIG['captcha_font_size'] = 32;
     $_CONFIG['email_sender_address'] = '';
+    $_CONFIG['email_registration_notice_address'] = '';
     $_CONFIG['backend'] = 'htpasswd';
     $_CONFIG['data_email_whitelist'] = '';
     $_CONFIG['data_email_blacklist'] = '';
@@ -160,7 +161,8 @@ class GEREMO
       if( !is_int( $_CONFIG[$p] ) )
         trigger_error( '['.__METHOD__.'] Parameter must be an integer ('.$p.')', E_USER_ERROR );
     // ... is string
-    foreach( array( 'secret', 'locales', 'login_url', 'email_sender_address',
+    foreach( array( 'secret', 'locales', 'login_url',
+                    'email_sender_address', 'email_registration_notice_address',
                     'data_email_whitelist', 'data_email_blacklist',
                     'backend', 'sql_phptype', 'sql_protocol', 'sql_hostspec',
                     'sql_database', 'sql_username', 'sql_password', 'sql_function' ) as $p )
@@ -322,10 +324,10 @@ class GEREMO
       $_TEXT['label:password'] = 'Password';
       $_TEXT['label:password_confirmation'] = '(confirm)';
       $_TEXT['label:title'] = 'Title';
-      $_TEXT['label:firstname'] = 'Firstname';
-      $_TEXT['label:lastname'] = 'Lastname';
+      $_TEXT['label:firstname'] = 'First Name';
+      $_TEXT['label:lastname'] = 'Last Name';
       $_TEXT['label:company'] = 'Company';
-      $_TEXT['label:jobtitle'] = 'Jobtitle';
+      $_TEXT['label:jobtitle'] = 'Job Title';
       $_TEXT['label:street'] = 'Street';
       $_TEXT['label:street2'] = 'Street (+)';
       $_TEXT['label:pobox'] = 'P.O.Box';
@@ -572,12 +574,15 @@ class GEREMO
         // Retrieve optional fields
         foreach( array( 'title', 'firstname', 'lastname', 'company', 'jobtitle', 'street', 'street2', 'pobox', 'city', 'zipcode', 'state', 'country', 'phone', 'fax' ) as $sID )
         {
-          if( $this->amCONFIG['data_include_'.$sID] and ( !isset( $_POST[$sID] ) or strlen( $_POST[$sID] ) > $this->amCONFIG['data_maxlength_'.$sID] ) )
+          if( $this->amCONFIG['data_include_'.$sID] )
           {
-            trigger_error( '['.__METHOD__.'] Invalid form data (register:fields); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
-            throw new Exception( $this->getText( 'error:invalid_form_data' ) );
+            if( !isset( $_POST[$sID] ) or strlen( $_POST[$sID] ) > $this->amCONFIG['data_maxlength_'.$sID] )
+            {
+              trigger_error( '['.__METHOD__.'] Invalid form data (register:fields); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
+              throw new Exception( $this->getText( 'error:invalid_form_data' ) );
+            }
+            $amFormData[$sID] = trim( $_POST[$sID] );
           }
-          $amFormData[$sID] = trim( $_POST[$sID] );
         }
 
         // Check verification code
@@ -596,6 +601,7 @@ class GEREMO
             throw new Exception( $this->getText( 'error:missing_required_field' )."\n[".$this->getText( 'label:'.$sID ).']' );
           }
         }
+        $amFormData = array_merge( array_fill_keys( array( 'title', 'firstname', 'lastname', 'company', 'jobtitle', 'street', 'street2', 'pobox', 'city', 'zipcode', 'state', 'country', 'phone', 'fax' ), 'n/a' ), $amFormData );
 
         // Check password
         if( $sPassword != $sPassword_confirm )
@@ -631,6 +637,18 @@ class GEREMO
         default:
           trigger_error( '['.__METHOD__.'] Unsupported authentication backend', E_USER_WARNING );
           throw new Exception( $this->getText( 'error:internal_error' ) );
+        }
+
+        // Send registration notice e-mail
+        if( !empty( $this->amCONFIG['email_registration_notice_address'] ) )
+        {
+          $sTemplate = file_get_contents( $this->amCONFIG['resources_dir'].'/'.$this->getDefaultLocale().'/registration_notice.email.tpl' );
+          if( $sTemplate === false )
+          {
+            trigger_error( '['.__METHOD__.'] Failed to load e-mail template', E_USER_WARNING );
+            throw new Exception( $this->getText( 'error:internal_error' ) );
+          }
+          $this->sendMail( $sTemplate, $this->amCONFIG['email_sender_address'], $this->amCONFIG['email_registration_notice_address'], array_merge( $amFormData, array( 'locale' => $this->getCurrentLocale() ) ) );
         }
 
         // Clear session (prevent replay of current session)

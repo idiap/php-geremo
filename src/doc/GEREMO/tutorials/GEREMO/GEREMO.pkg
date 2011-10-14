@@ -58,6 +58,7 @@ Cedric Dufour, Idiap Research Institute
 <listitem><emphasis>dynamic 24h-rotated code keys</emphasis> (prevent brute-force attacks)</listitem>
 <listitem>registration process <emphasis>state tracking</emphasis> (prevent replay attacks)</listitem>
 <listitem>registration backends: <emphasis><literal>htpasswd</literal></emphasis> and <emphasis><literal>sql</literal></emphasis> (compatible with Apache's <literal>mod_auth_file</literal>, <literal>mod_auth_mysql</literal> and <literal>mod_auth_pgsql</literal>)</listitem>
+<listitem>registration <emphasis>e-mail notice</emphasis> (upon successful user registration)</listitem>
 <listitem><emphasis>localized and customizable</emphasis> HTML, e-mail templates and text messages</listitem>
 </itemizedList>
 </refsect2>

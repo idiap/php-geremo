@@ -50,5 +50,6 @@ Features
  - dynamic 24h-rotated code keys (prevent brute-force attacks)
  - registration process state tracking (prevent replay attacks)
  - registration backends: htpasswd and sql (compatible with Apache's mod_auth_file, mod_auth_mysql and mod_auth_pgsql)
+ - registration e-mail notice (upon successful user registration)
  - localized and customizable HTML, e-mail templates and text messages
 
