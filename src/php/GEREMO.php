@@ -245,6 +245,21 @@ class GEREMO
     return explode( ',', $this->amCONFIG['locales'] );
   }
 
+  /** Retrieve the default locale
+   *
+   * @return string Locale ID
+   */
+  public function getDefaultLocale()
+  {
+    static $sLocale;
+    if( is_null( $sLocale ) )
+    {
+      $sLocale = strstr( $this->amCONFIG['locales'], ',', true );
+      if( $sLocale === false ) $sLocale = $this->amCONFIG['locales'];
+    }
+    return $sLocale;
+  }
+
   /** Retrieve the current locale
    *
    * @return string Locale ID
@@ -260,8 +275,7 @@ class GEREMO
       }
       else
       {
-        $sLocale = strstr( $this->amCONFIG['locales'], ',', true );
-        if( $sLocale === false ) $sLocale = $this->amCONFIG['locales'];
+        $sLocale = $this->getDefaultLocale();
       }
     }
     return $sLocale;
