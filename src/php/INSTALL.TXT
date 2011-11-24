@@ -23,7 +23,7 @@ NOTE: We will assume a previously working Apache/PHP/PEAR setup.
    BASH: pear install -o PhpDocumentor
    BASH: tar -xjf php-geremo.tar.bz2
    BASH: DOC_DIR='<documentation-output-directory>'
-   BASH: ./bin/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/php src/doc
+   BASH: ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/php src/doc
 
 
 USAGE
