@@ -128,6 +128,7 @@ class GEREMO
     $_CONFIG['sql_username'] = 'geremo';
     $_CONFIG['sql_password'] = '';
     $_CONFIG['sql_options'] = array();
+    $_CONFIG['sql_prepare'] = '';
     $_CONFIG['sql_function'] = 'fn_GEREMO_Register';
 
     // Load user configuration
@@ -161,7 +162,7 @@ class GEREMO
                     'email_sender_address', 'email_registration_notice_address',
                     'data_email_whitelist', 'data_email_blacklist',
                     'backend',
-                    'sql_dsn', 'sql_username', 'sql_password', 'sql_function' ) as $p )
+                    'sql_dsn', 'sql_username', 'sql_password', 'sql_prepare', 'sql_function' ) as $p )
       if( !is_string( $_CONFIG[$p] ) )
         trigger_error( '['.__METHOD__.'] Parameter must be a string ('.$p.')', E_USER_ERROR );
     // ... is array (of scalar)
@@ -1100,10 +1101,23 @@ class GEREMO
     {
       $oPDO = new PDO( $this->amCONFIG['sql_dsn'], $this->amCONFIG['sql_username'], $this->amCONFIG['sql_password'], $this->amCONFIG['sql_options'] );
       $oPDO->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+      if( !empty( $this->amCONFIG['sql_prepare'] ) )
+      {
+        //echo nl2br( var_export( $this->amCONFIG['sql_prepare'], true ) ); // DEBUG
+        $oPDO->exec( $this->amCONFIG['sql_prepare'] );
+      }
     }
     catch( PDOException $e )
     {
-      trigger_error( '['.__METHOD__.'] Failed to instantiate database object; '.$e->getMessage(), E_USER_WARNING );
+      if( $oPDO instanceof PDO )
+      {
+        $amErrorInfo = $oPDO->errorInfo();
+        trigger_error( '['.__METHOD__.'] Failed to connect to database; '.( is_array( $amErrorInfo ) ? $amErrorInfo[2] : 'no error code/info'), E_USER_WARNING );
+      }
+      else
+      {
+        trigger_error( '['.__METHOD__.'] Failed to connect to database; '.$e->getMessage(), E_USER_WARNING );
+      }
       throw new Exception( $this->getText( 'error:internal_error' ) );
     }
 

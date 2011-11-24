@@ -165,6 +165,10 @@ $_CONFIG['data_include_fax'] = 1;
 #$_CONFIG['sql_password'] = ''; // string
 #$_CONFIG['sql_options'] = array(); // array (of scalar)
 
+# Database statement(s) to execute to prepare the database before registration.
+# Example: 'SET NAMES \'ISO-8859-1\'' when using a non-ISO-8859-1 database.
+#$_CONFIG['sql_prepare'] = ''; // string
+
 # Database function to use to perform the registration.
 # See the '*.sql' files in the 'examples' directory for further details.
 #$_CONFIG['sql_function'] = 'fn_GEREMO_Register'; // string
