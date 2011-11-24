@@ -13,8 +13,10 @@ NOTE: We will assume a previously working Apache/PHP/PEAR setup.
 
 [MUST] Install PHP-GEREMO (using PHP PEAR):
 
-   BASH: tar -xjf php-geremo.tar.bz2
-   BASH: pear install src/php/packages.xml
+   BASH: VERSION='version'
+   BASH: tar -xjf php-geremo-${VERSION}.tar.bz2
+   BASH: cd "./${VERSION}"
+   BASH: pear install ./src/php/packages.xml
 
 2.
 
