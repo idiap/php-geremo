@@ -1,3 +1,9 @@
+php-geremo (1.0.0RC3) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Cedric Dufour <cedric.dufour@idiap.ch>  Fri, 24 Nov 2011 17:00:00 +0100
+
 php-geremo (1.0.0RC2) unstable; urgency=low
 
   * New upstream version.

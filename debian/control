@@ -5,7 +5,7 @@ Maintainer: Cedric Dufour <cedric.dufour@idiap.ch>
 Build-Depends: debhelper (>= 5) 
 Build-Depends-Indep: php-pear
 Homepage: http://www.idiap.ch/software/php-geremo
-Standards-Version: 1.0.0RC2
+Standards-Version: 1.0.0RC3
 
 Package: php-geremo
 Architecture: all
