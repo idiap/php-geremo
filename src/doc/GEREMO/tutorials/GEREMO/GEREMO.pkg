@@ -200,7 +200,7 @@ $ chown root.www-data /var/www/authreqd/.htaccess
 
 <refsect1 id="{@id documentation}">
 <title>Further documentation</title>
-<para>The full documentation of PHP-GEREMO is available - in (phpDocumentor-generated) HTML format and including source code - at {@link http://www.idiap.ch/php-geremo/documentation/ http://www.idiap.ch/php-geremo/documentation/}.</para>
+<para>The full documentation of PHP-GEREMO is available - in (phpDocumentor-generated) HTML format and including source code - at {@link http://www.idiap.ch/software/php-geremo/documentation/ http://www.idiap.ch/software/php-geremo/documentation/}.</para>
 </refsect1>
 
 </refentry> 
