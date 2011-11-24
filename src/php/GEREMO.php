@@ -124,13 +124,10 @@ class GEREMO
     $_CONFIG['data_maxlength_phone'] = 50;
     $_CONFIG['data_maxlength_fax'] = 50;
     $_CONFIG['data_maxlength_email'] = 50;
-    $_CONFIG['sql_phptype'] = 'mysql';
-    $_CONFIG['sql_protocol'] = 'tcp';
-    $_CONFIG['sql_hostspec'] = 'localhost';
-    $_CONFIG['sql_database'] = 'geremo';
+    $_CONFIG['sql_dsn'] = 'mysql:host=localhost;dbname=geremo';
     $_CONFIG['sql_username'] = 'geremo';
     $_CONFIG['sql_password'] = '';
-    $_CONFIG['sql_option_ssl'] = 0;
+    $_CONFIG['sql_options'] = array();
     $_CONFIG['sql_function'] = 'fn_GEREMO_Register';
 
     // Load user configuration
@@ -155,8 +152,7 @@ class GEREMO
                     'data_maxlength_company', 'data_maxlength_jobtitle', 'data_maxlength_street',
                     'data_maxlength_street2', 'data_maxlength_city', 'data_maxlength_zipcode',
                     'data_maxlength_state', 'data_maxlength_country',
-                    'data_maxlength_phone', 'data_maxlength_fax', 'data_maxlength_email',
-                    'sql_option_ssl',
+                    'data_maxlength_phone', 'data_maxlength_fax', 'data_maxlength_email'
                     ) as $p )
       if( !is_int( $_CONFIG[$p] ) )
         trigger_error( '['.__METHOD__.'] Parameter must be an integer ('.$p.')', E_USER_ERROR );
@@ -164,10 +160,19 @@ class GEREMO
     foreach( array( 'secret', 'locales', 'login_url',
                     'email_sender_address', 'email_registration_notice_address',
                     'data_email_whitelist', 'data_email_blacklist',
-                    'backend', 'sql_phptype', 'sql_protocol', 'sql_hostspec',
-                    'sql_database', 'sql_username', 'sql_password', 'sql_function' ) as $p )
+                    'backend',
+                    'sql_dsn', 'sql_username', 'sql_password', 'sql_function' ) as $p )
       if( !is_string( $_CONFIG[$p] ) )
         trigger_error( '['.__METHOD__.'] Parameter must be a string ('.$p.')', E_USER_ERROR );
+    // ... is array (of scalar)
+    foreach( array( 'sql_options' ) as $p )
+    {
+      if( !is_array( $_CONFIG[$p] ) )
+        trigger_error( '['.__METHOD__.'] Parameter must be an array ('.$p.')', E_USER_ERROR );
+      foreach( $_CONFIG[$p] as $k => $v )
+        if( !is_scalar( $v ) )
+          trigger_error( '['.__METHOD__.'] Parameter must be a scalar ('.$p.':'.$k.')', E_USER_ERROR );
+    }
     // ... is readable
     foreach( array( 'resources_dir' ) as $p )
       if( !is_readable( $_CONFIG[$p] ) )
@@ -1069,9 +1074,6 @@ class GEREMO
    */
   private function registerSql( $sUsername, $sPassword, $asFields )
   {
-    // Load PEAR::MDB2 extension
-    require_once 'MDB2.php';
-
     // Password hash
     switch( $this->amCONFIG['data_password_hash'] )
     {
@@ -1086,21 +1088,15 @@ class GEREMO
       throw new Exception( $this->getText( 'error:internal_error' ) );
     }
 
-    // DSN and options
-    $asDSN = array( 'phptype' => $this->amCONFIG['sql_phptype'],
-                    'protocol' => $this->amCONFIG['sql_protocol'],
-                    'hostspec' => $this->amCONFIG['sql_hostspec'],
-                    'database' => $this->amCONFIG['sql_database'],
-                    'username' => $this->amCONFIG['sql_username'],
-                    'password' => $this->amCONFIG['sql_password'] );
-    $amOptions = array();
-    if( $this->amCONFIG['sql_option_ssl'] > 0 ) $amOptions['ssl'] = true;
-
     // Connect
-    $oMDB2 = MDB2::connect( $asDSN, $amOptions );
-    if( PEAR::isError( $oMDB2 ) )
+    try
     {
-      trigger_error( '['.__METHOD__.'] Failed to instantiate database object; '.$oMDB2->getMessage(), E_USER_WARNING );
+      $oPDO = new PDO( $this->amCONFIG['sql_dsn'], $this->amCONFIG['sql_username'], $this->amCONFIG['sql_password'], $this->amCONFIG['sql_options'] );
+      $oPDO->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+    }
+    catch( PDOException $e )
+    {
+      trigger_error( '['.__METHOD__.'] Failed to instantiate database object; '.$e->getMessage(), E_USER_WARNING );
       throw new Exception( $this->getText( 'error:internal_error' ) );
     }
 
@@ -1109,36 +1105,43 @@ class GEREMO
     // ... function
     $sSQL .= $this->amCONFIG['sql_function'].'(';
     // ... credentials
-    $sSQL .= $oMDB2->quote( $sUsername, 'text', true ).','.$oMDB2->quote( $sPassword, 'text', true );
+    $sSQL .= $oPDO->quote( $sUsername, PDO::PARAM_STR ).','.$oPDO->quote( $sPassword, PDO::PARAM_STR );
     // ... optional fields
     foreach( array( 'title', 'firstname', 'lastname', 'company', 'jobtitle', 'street', 'street2', 'pobox', 'city', 'zipcode', 'state', 'country', 'phone', 'fax' ) as $sID )
     {
-      $sSQL .= ','.$oMDB2->quote( $asFields[$sID], 'text', true );
+      $sSQL .= ','.$oPDO->quote( $asFields[$sID], PDO::PARAM_STR );
     }
     // ... end
     $sSQL .= ')';
-    //echo $sSQL; // DEBUG
+    //echo nl2br( var_export( $sSQL, true ) ); // DEBUG
 
     // Execute
     try
     {
       // Query
-      $oQuery = $oMDB2->query( $sSQL, array( 'boolean' ) );
-      if( PEAR::isError( $oQuery ) )
+      try
       {
-        trigger_error( '['.__METHOD__.'] Failed to query database; '.$oQuery->getMessage(), E_USER_WARNING );
+        $oQuery = $oPDO->query( $sSQL );
+        $sResult = $oQuery->fetchColumn();
+        //echo nl2br( var_export( $sResult, true ) ); // DEBUG
+      }
+      catch( PDOException $e )
+      {
+        if( $oQuery instanceof PDOStatement )
+        {
+          $amErrorInfo = $oQuery->errorInfo();
+          trigger_error( '['.__METHOD__.'] Failed to query database; '.( is_array( $amErrorInfo ) ? $amErrorInfo[2] : 'no error code/info'), E_USER_WARNING );
+        }
+        else
+        {
+          trigger_error( '['.__METHOD__.'] Failed to query database', E_USER_WARNING );
+        }
         throw new Exception( $this->getText( 'error:internal_error' ) );
       }
-      $amRow = $oQuery->fetchRow( MDB2_FETCHMODE_ORDERED );
-      $oQuery->free();
+      $oQuery = null;
 
-      // Parse result
-      if( !is_array( $amRow ) or PEAR::isError( $amRow[0] ) )
-      {
-        trigger_error( '['.__METHOD__.'] Invalid database query result', E_USER_WARNING );
-        throw new Exception( $this->getText( 'error:internal_error' ) );
-      }
-      if( $amRow[0] !== true )
+      // Check result
+      if( (boolean)(integer)$sResult !== true )
       {
         trigger_error( '['.__METHOD__.'] Invalid result from database function', E_USER_WARNING );
         throw new Exception( $this->getText( 'error:internal_error' ) );
@@ -1147,12 +1150,13 @@ class GEREMO
     }
     catch( Exception $e )
     {
-      $oMDB2->disconnect();
+      $oQuery = null;
+      $oPDO = null;
       throw $e;
     }
 
     // Disconnect
-    $oMDB2->disconnect();
+    $oPDO = null;
   }
 
 }

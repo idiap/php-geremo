@@ -5,13 +5,12 @@ Maintainer: Cedric Dufour <cedric.dufour@idiap.ch>
 Build-Depends: debhelper (>= 5) 
 Build-Depends-Indep: php-pear
 Homepage: http://www.idiap.ch/software/php-geremo
-Standards-Version: 1.0.20111011
+Standards-Version: 1.0.0RC2
 
 Package: php-geremo
 Architecture: all
 Depends: libapache2-mod-php5 | php5-cgi, php5-mhash, php5-mcrypt, php-pear
 Recommends: php-text-captcha, php-mail, php-mail-mime
-Suggests: php-mdb2
 Description: PHP Generic Registration Module (PHP-GEREMO)
  The PHP Generic Registration Module is a PHP class which allows to implement
  "double opt-in" users registration as an independent and foolproof add-on to

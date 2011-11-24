@@ -105,12 +105,6 @@ The idea behind this module is to:
     <channel>pear.php.net</channel>
    </package>
  </required>
- <optional>
-   <package>
-    <name>MDB2</name>
-    <channel>pear.php.net</channel>
-   </package>
- </optional>
  </dependencies>
  <phprelease />
  <changelog>

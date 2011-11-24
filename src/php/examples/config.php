@@ -159,15 +159,12 @@ $_CONFIG['data_include_fax'] = 1;
 
 # SQL SETTINGS
 
-# Database connection parameters (matching PEAR::MDB2 stanza).
-#$_CONFIG['sql_phptype'] = 'mysql';
-#$_CONFIG['sql_protocol'] = 'tcp';
-#$_CONFIG['sql_hostspec'] = 'localhost';
-#$_CONFIG['sql_database'] = 'geremo';
-#$_CONFIG['sql_username'] = 'geremo';
-#$_CONFIG['sql_password'] = '';
-#$_CONFIG['sql_option_ssl'] = 0;
+# Database connection parameters (matching PHP Data Objects [PDO] stanza).
+#$_CONFIG['sql_dsn'] = 'mysql:host=localhost;dbname=geremo'; // string
+#$_CONFIG['sql_username'] = 'geremo'; // string
+#$_CONFIG['sql_password'] = ''; // string
+#$_CONFIG['sql_options'] = array(); // array (of scalar)
 
 # Database function to use to perform the registration.
 # See the '*.sql' files in the 'examples' directory for further details.
-#$_CONFIG['sql_function'] = 'fn_GEREMO_Register';
+#$_CONFIG['sql_function'] = 'fn_GEREMO_Register'; // string

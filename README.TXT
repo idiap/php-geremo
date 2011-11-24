@@ -34,7 +34,7 @@ Dependencies
  - [REQUIRED] PHP mcrypt extension
  - [REQUIRED] PHP PEAR::Text_CAPTCHA extension (and dependencies)
  - [REQUIRED] PHP PEAR::Mail and PEAR::Mail_Mime extensions (and dependencies)
- - [OPTIONAL] PHP PEAR::MDB2 extension (and dependencies); required only when using a SQL backend
+ - [OPTIONAL] PHP PDO extension; required only when using a SQL backend
 
 
 Features

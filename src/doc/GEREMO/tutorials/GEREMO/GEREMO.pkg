@@ -41,7 +41,7 @@ Cedric Dufour, Idiap Research Institute
 <listitem>[REQUIRED] PHP <literal>mcrypt</literal> extension</listitem>
 <listitem>[REQUIRED] PHP <literal>PEAR::Text_CAPTCHA</literal> extension (and dependencies)</listitem>
 <listitem>[REQUIRED] PHP <literal>PEAR::Mail</literal> and <literal>PEAR::Mail_Mime</literal> extensions (and dependencies)</listitem>
-<listitem>[OPTIONAL] PHP <literal>PEAR::MDB2</literal> extension (and dependencies); required only when using a SQL backend</listitem>
+<listitem>[OPTIONAL] PHP <literal>PDO</literal> extension; required only when using a SQL backend</listitem>
 </itemizedList>
 </refsect2>
 
