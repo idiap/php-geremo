@@ -36,8 +36,9 @@ install: build
 	dh_installdirs
 
 	# Create the PEAR package to be bundled as a Debian package (DEB_PACKAGE)
-	cp package.xml $(PEAR_SOURCE)/package.xml
+	cp *.TXT $(PEAR_SOURCE)/.
 	$(PEAR) install -f -n -R debian/$(DEB_PACKAGE) $(PEAR_SOURCE)/package.xml
+	rm $(PEAR_SOURCE)/*.TXT
 	rm -f debian/$(DEB_PACKAGE)/usr/share/php/.filemap
 	rm -f debian/$(DEB_PACKAGE)/usr/share/php/.lock
 	rm -rf debian/$(DEB_PACKAGE)/usr/share/php/.channels
@@ -72,7 +73,7 @@ binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure
 
 build-orig-tarball:
-	tar -czf ../php-geremo_$(DEB_UPSTREAM_VERSION).orig.tar.gz src package.xml .git .gitignore
+	tar -czf ../php-geremo_$(DEB_UPSTREAM_VERSION).orig.tar.gz .git .gitignore src *.TXT
 
 build-source-tarball:
 	dh_testdir
@@ -81,6 +82,6 @@ build-source-tarball:
 
 	# Create the source tarball
 	mkdir -p debian/tmp/$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)
-	cp -rp src debian/tmp/$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)/.
+	cp -rp src *.TXT debian/tmp/$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)/.
 	tar -C debian/tmp -cjf ../$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION).tar.bz2 $(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)
 

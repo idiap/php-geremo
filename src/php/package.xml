@@ -41,13 +41,13 @@ The idea behind this module is to:
  <notes>Initial release</notes>
  <contents>
   <dir name="/">
+   <file name="README.TXT" role="doc" />
+   <file name="INSTALL.TXT" role="doc" />
+   <file name="COPYRIGHT.TXT" role="doc" />
+   <file name="LICENSE.TXT" role="doc" />
    <file name="GEREMO.php" role="php">
     <tasks:replace from="@version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="/" name="README.TXT" role="doc" />
-   <file name="COPYRIGHT.TXT" role="doc" />
-   <file name="LICENSE.TXT" role="doc" />
-   <file name="INSTALL.TXT" role="doc" />
    <dir name="examples">
     <file name="README.TXT" role="doc" />
     <file name="config.php" role="doc" />
