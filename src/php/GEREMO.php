@@ -483,7 +483,7 @@ class GEREMO
 
       case 'locale':
         // Retrieve form variables
-        if( !isset( $_POST['locale'] ) )
+        if( !isset( $_POST['locale'] ) or !is_scalar( $_POST['locale'] ) )
         {
           trigger_error( '['.__METHOD__.'] Invalid form data (locale); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
           throw new Exception( $this->getText( 'error:invalid_form_data' ) );
@@ -501,7 +501,9 @@ class GEREMO
         
       case 'email':
         // Retrieve arguments
-        if( !isset( $_POST['email'] ) or !isset( $_POST['captcha'] ) or strlen( $_POST['email'] ) > $this->amCONFIG['data_maxlength_email'] )
+        if( !isset( $_POST['email'], $_POST['captcha'] )
+            or !is_scalar( $_POST['email'] ) or !is_scalar( $_POST['captcha'] )
+            or strlen( $_POST['email'] ) > $this->amCONFIG['data_maxlength_email'] )
         {
           trigger_error( '['.__METHOD__.'] Invalid form data (email); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
           throw new Exception( $this->getText( 'error:invalid_form_data' ) );
@@ -510,7 +512,7 @@ class GEREMO
         $sCaptcha = trim( $_POST['captcha'] );
 
         // Check e-mail address
-        if( !preg_match( '/s*(\w+[-_.])*\w+@(\w+[-_.])*\w+\.\w+\s*/A', $amFormData['email'] ) )
+        if( !preg_match( '/s*(\w+[-_.])*\w+@(\w+[-_.])*\w+\.\w+\s*/AD', $amFormData['email'] ) )
         {
           $bSessionBailOut = false;
           throw new Exception( $this->getText( 'error:invalid_email' )."\n[".$this->getText( 'label:email' ).']' );
@@ -564,8 +566,11 @@ class GEREMO
 
       case 'register':
         // Retrieve arguments
-        if( !isset( $_POST['verification_slot'] ) or !isset( $_POST['verification_code'] ) or
-            !isset( $_POST['email'] ) or !isset( $_POST['password'] ) or !isset( $_POST['password_confirm'] ) )
+        if( !isset( $_POST['verification_slot'], $_POST['verification_code'], $_POST['email'], $_POST['password'], $_POST['password_confirm'] )
+            or !is_scalar( $_POST['verification_slot'] ) or !is_scalar( $_POST['verification_code'] )
+            or !is_scalar( $_POST['email'] ) or !is_scalar( $_POST['password'] ) or !is_scalar( $_POST['password_confirm'] )
+            or strlen( $_POST['email'] ) > $this->amCONFIG['data_maxlength_email']
+            or strlen( $_POST['password'] ) > 1000 or strlen( $_POST['password_confirm'] ) > 1000 )
         {
           trigger_error( '['.__METHOD__.'] Invalid form data (register:arguments); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
           throw new Exception( $this->getText( 'error:invalid_form_data' ) );
@@ -581,7 +586,9 @@ class GEREMO
         {
           if( $this->amCONFIG['data_include_'.$sID] )
           {
-            if( !isset( $_POST[$sID] ) or strlen( $_POST[$sID] ) > $this->amCONFIG['data_maxlength_'.$sID] )
+            if( !isset( $_POST[$sID] )
+                or !is_scalar( $_POST[$sID] )
+                or strlen( $_POST[$sID] ) > $this->amCONFIG['data_maxlength_'.$sID] )
             {
               trigger_error( '['.__METHOD__.'] Invalid form data (register:fields); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
               throw new Exception( $this->getText( 'error:invalid_form_data' ) );
