@@ -29,12 +29,12 @@ The idea behind this module is to:
 Dependencies
 ------------
 
- - [REQUIRED] PHP 5.3 or later (it may work on earlier PHP 5 versions; this is untested though)
- - [REQUIRED] PHP mhash extension
- - [REQUIRED] PHP mcrypt extension
- - [REQUIRED] PHP PEAR::Text_CAPTCHA extension (and dependencies)
- - [REQUIRED] PHP PEAR::Mail and PEAR::Mail_Mime extensions (and dependencies)
- - [OPTIONAL] PHP PDO extension; required only when using a SQL backend
+ - [MUST] PHP 5.3 or later (it may work on earlier PHP 5 versions; this is untested though)
+ - [MUST] PHP mhash extension
+ - [MUST] PHP mcrypt extension
+ - [MUST] PHP PEAR::Text_CAPTCHA extension (and dependencies)
+ - [MUST] PHP PEAR::Mail and PEAR::Mail_Mime extensions (and dependencies)
+ - [MAY] PHP PDO extension; required only when using a SQL backend
 
 
 Features

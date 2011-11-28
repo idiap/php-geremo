@@ -30,3 +30,8 @@ Description: PHP Generic Registration Module (PHP-GEREMO)
     ting application;
   - do so as an independent and foolproof add-on, which focus on the quality
     and the security of the registration process.
+
+Package: php-geremo-doc
+Architecture: all
+Recommends: php-geremo
+Description: PHP Generic Registration Module (PHP-GEREMO) - Documentation

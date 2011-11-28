@@ -42,7 +42,9 @@ The idea behind this module is to:
  <contents>
   <dir name="/">
    <file name="README.TXT" role="doc" />
-   <file name="INSTALL.TXT" role="doc" />
+   <file name="INSTALL.TXT" role="doc">
+    <tasks:replace from="@version@" to="version" type="package-info" />
+   </file>
    <file name="COPYRIGHT.TXT" role="doc" />
    <file name="LICENSE.TXT" role="doc" />
    <file name="GEREMO.php" role="php">

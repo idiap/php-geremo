@@ -36,12 +36,12 @@ Cedric Dufour, Idiap Research Institute
 <refsect2 id="{@id specs_depends}">
 <title>Dependencies</title>
 <itemizedList>
-<listitem>[REQUIRED] <literal>PHP 5.3</literal> or later (it may work on earlier PHP 5 versions; this is untested though)</listitem>
-<listitem>[REQUIRED] PHP <literal>mhash</literal> extension</listitem>
-<listitem>[REQUIRED] PHP <literal>mcrypt</literal> extension</listitem>
-<listitem>[REQUIRED] PHP <literal>PEAR::Text_CAPTCHA</literal> extension (and dependencies)</listitem>
-<listitem>[REQUIRED] PHP <literal>PEAR::Mail</literal> and <literal>PEAR::Mail_Mime</literal> extensions (and dependencies)</listitem>
-<listitem>[OPTIONAL] PHP <literal>PDO</literal> extension; required only when using a SQL backend</listitem>
+<listitem>[MUST] <literal>PHP 5.3</literal> or later (it may work on earlier PHP 5 versions; this is untested though)</listitem>
+<listitem>[MUST] PHP <literal>mhash</literal> extension</listitem>
+<listitem>[MUST] PHP <literal>mcrypt</literal> extension</listitem>
+<listitem>[MUST] PHP <literal>PEAR::Text_CAPTCHA</literal> extension (and dependencies)</listitem>
+<listitem>[MUST] PHP <literal>PEAR::Mail</literal> and <literal>PEAR::Mail_Mime</literal> extensions (and dependencies)</listitem>
+<listitem>[MAY] PHP <literal>PDO</literal> extension; required only when using a SQL backend</listitem>
 </itemizedList>
 </refsect2>
 
@@ -79,31 +79,155 @@ Cedric Dufour, Idiap Research Institute
 </refsect1>
 
 
-<refsect1 id="{@id install}">
-<title>Installation</title>
-<para><emphasis>WARNING: PHP-GEREMO is actively maintained on Linux. It has not been tested on Windows.</emphasis></para>
+<refsect1 id="{@id build}">
+<title>Build</title>
+<para><emphasis>NOTE:</emphasis> By &quot;build&quot;, we mean create the necessary tarballs/package required for installation (according to the INSTALL section below) or distribution.</para>
 
-<refsect2 id="{@id install_tarball}">
-<title>From tarball (using PHP PEAR)</title>
+<refsect2 id="{@id build_tree}">
+<title>[MUST] Obtain the source tarball</title>
 <screen>
 <![CDATA[
-$ umask 027
-$ tar -xjf php-geremo.tar.bz2
-$ pear install src/php/packages.xml
-$ chown -R root.www-data /usr/share/php/GEREMO/ \
-                         /usr/share/php/data/GEREMO/ \
-                         /usr/share/php/docs/GEREMO/
+$ tar -xjf php-geremo-source-@version@.tar.bz2
+$ cd php-geremo-@version@
 ]]>
 </screen>
 </refsect2>
 
-<refsect2 id="{@id install_debian}">
-<title>Debian package</title>
+<refsect2 id="{@id build_source}">
+<title>[MAY] (Re-)build the source tarball</title>
 <screen>
 <![CDATA[
-$ apt-get install php-geremo.deb
+$ fakeroot ./debian/rules build-source-tarball
+$ ls -al ../php-geremo-source-@version@.tar.bz2
 ]]>
 </screen>
+</refsect2>
+
+<refsect2 id="{@id build_install}">
+<title>[MAY] Build the installation (release) tarball</title>
+<screen>
+<![CDATA[
+$ fakeroot ./debian/rules build-install-tarball
+$ ls -al ../php-geremo-@version@.tar.bz2
+]]>
+</screen>
+</refsect2>
+
+<refsect2 id="{@id build_doc}">
+<title>[MAY] Build the documentation tarball</title>
+<screen>
+<![CDATA[
+$ fakeroot ./debian/rules build-doc-tarball
+$ ls -al ../php-geremo-doc-@version@.tar.bz2
+]]>
+</screen>
+</refsect2>
+
+<refsect2 id="{@id build_debian}">
+<title>[MAY] Build the debian packages</title>
+<screen>
+<![CDATA[
+$ debuild -us -uc -b
+$ ls -al ../php-geremo_@version@_all.deb ../php-geremo-doc_@version@_all.deb
+]]>
+</screen>
+</refsect2>
+
+<refsect2 id="{@id build_debian_source}">
+<title>[MAY] Build the debian source package</title>
+<screen>
+<![CDATA[
+$ debuild -I'.git*' -us -uc -S
+$ ls -al ../php-geremo_@version@.dsc ../php-geremo_@version@.tar.gz
+]]>
+</screen>
+</refsect2>
+
+</refsect1>
+
+
+<refsect1 id="{@id install}">
+<title>Installation</title>
+<para><emphasis>WARNING: PHP-GEREMO is actively maintained on Linux. It has not been tested on Windows.</emphasis></para>
+<para><emphasis>NOTE:</emphasis> We assume a previously working Apache/PHP/PEAR setup.</para>
+
+<refsect2 id="{@id install_php}">
+<title>[MUST] Install PHP-GEREMO</title>
+
+<refsect3 id="{@id install_php_release}">
+<title>[OR] using the release tarball</title>
+<screen>
+<![CDATA[
+$ INSTALL_DIR='<installation-directory>'
+$ cd "${INSTALL_DIR}"
+$ tar -xjf php-geremo-@version@.tar.bz2
+]]>
+</screen>
+</refsect3>
+
+<refsect3 id="{@id install_php_source}">
+<title>[OR] using the source tarball (and PHP PEAR installer)</title>
+<screen>
+<![CDATA[
+$ tar -xjf php-geremo-source-@version@.tar.bz2
+$ cd php-geremo-@version@
+$ pear install src/php/packages.xml
+]]>
+</screen>
+</refsect3>
+
+<refsect3 id="{@id install_php_debian}">
+<title>[OR] using the debian package</title>
+<screen>
+<![CDATA[
+$ apt-get install php-geremo_@version@_all.deb
+]]>
+</screen>
+</refsect3>
+
+</refsect2>
+
+</refsect1>
+
+<refsect1 id="{@id install_contd}">
+<title>(cont'd)</title> <!-- an horrible hack to circumvent a bug in PhpDocumentor docbook parsing -->
+
+<refsect2 id="{@id install_doc}">
+<title>[MAY] Install PHP-GEREMO Documentation</title>
+
+<refsect3 id="{@id install_doc_release}">
+<title>[OR] using the documentation tarball</title>
+<screen>
+<![CDATA[
+$ DOC_DIR='<documentation-directory>'
+$ cd "${DOC_DIR}"
+$ tar -xjf php-geremo-doc-@version@.tar.bz2
+]]>
+</screen>
+</refsect3>
+
+<refsect3 id="{@id install_doc_source}">
+<title>[OR] using the source tarball (and PhpDocumentor)</title>
+<screen>
+<![CDATA[
+$ DOC_DIR='<documentation-directory>'
+$ pear install -o PhpDocumentor
+$ tar -xjf php-geremo-source-@version@.tar.bz2
+$ cd php-geremo-@version@
+$ ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/php src/doc
+]]>
+</screen>
+</refsect3>
+
+<refsect3 id="{@id install_doc_debian}">
+<title>[OR] using the debian package</title>
+<screen>
+<![CDATA[
+$ apt-get install php-geremo-doc_@version@_all.deb
+]]>
+</screen>
+</refsect3>
+
 </refsect2>
 
 </refsect1>
@@ -113,6 +237,7 @@ $ apt-get install php-geremo.deb
 <title>Usage</title>
 <para><emphasis>NOTE:</emphasis> We will assume:</para>
 <itemizedList>
+<listitem>an installation consistent with PHP PEAR standards (in <literal>/usr/share/php/...</literal>)</listitem>
 <listitem>the web server is <literal>Apache</literal></listitem>
 <listitem>a password-protected application located at <literal>https://example.org/authreqd/</literal> (corresponding to the <literal>/var/www/authreqd/</literal> directory)</listitem>
 <listitem>PHP-GEREMO is located at <literal>https://example.org/register/</literal> (corresponding to the <literal>/var/www/register/</literal> directory)</listitem>
@@ -131,7 +256,7 @@ $ chown -R root.www-data /var/lib/geremo/data
 </refsect2>
 
 <refsect2 id="{@id usage_2}">
-<title>[OPTIONAL] Create and customize PHP-GEREMO's (localized) resources directory</title>
+<title>[MAY] Create and customize PHP-GEREMO's (localized) resources directory</title>
 <screen>
 <![CDATA[
 $ umask 027
@@ -148,7 +273,7 @@ $ chown -R root.www-data /var/lib/geremo/resources
 <![CDATA[
 $ umask 027
 $ mkdir -p /etc/php5/geremo
-$ cp /usr/share/php/GEREMO/samples/config.php /etc/php5/geremo/config.php
+$ cp /usr/share/php/docs/GEREMO/examples/config.php /etc/php5/geremo/config.php
 $ chown -R root.www-data /etc/php5/geremo
 ]]>
 </screen>
@@ -160,7 +285,7 @@ $ chown -R root.www-data /etc/php5/geremo
 <screen>
 <![CDATA[
 $ umask 027
-$ cp /usr/share/php/GEREMO/samples/index.php /var/www/register/index.php
+$ cp /usr/share/php/docs/GEREMO/examples/index.php /var/www/register/index.php
 $ chown root.www-data /var/www/register/index.php
 ]]>
 </screen>
@@ -179,8 +304,8 @@ $ chown root.www-data /var/www/register/.htaccess
 </refsect2>
 
 <refsect2 id="{@id usage_5}">
-<title>[OPTIONAL] Create PHP-GEREMO's SQL backend (or use an existing one)</title>
-<para><emphasis>SEE:</emphasis> /usr/share/php/GEREMO/samples/*.sql</para>
+<title>[MAY] Create PHP-GEREMO's SQL backend (or use an existing one)</title>
+<para><emphasis>SEE:</emphasis> /usr/share/php/docs/GEREMO/examples/*.sql</para>
 </refsect2>
 
 <refsect2 id="{@id usage_6}">
@@ -189,7 +314,7 @@ $ chown root.www-data /var/www/register/.htaccess
 <![CDATA[
 $ BACKEND='<backend>' # adapt to match your setup
 $ umask 027
-$ cp /usr/share/php/GEREMO/samples/${BACKEND}.htaccess /var/www/authreqd/.htaccess
+$ cp /usr/share/php/docs/GEREMO/examples/${BACKEND}.htaccess /var/www/authreqd/.htaccess
 $ chown root.www-data /var/www/authreqd/.htaccess
 ]]>
 </screen>

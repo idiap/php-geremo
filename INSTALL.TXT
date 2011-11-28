@@ -4,94 +4,147 @@ PHP Generic Registration Module (PHP-GEREMO)
 NOTE: For the sake of clarity, we will assume a Linux (Debian) environment.
 
 
+BUILD
+-----
+
+NOTE: By "build", we mean create the necessary tarballs/package required for
+      installation (according to the INSTALL section below) or distribution.
+
+1. [MUST] Obtain the source tarball:
+
+   BASH: tar -xjf php-geremo-source-@version@.tar.bz2
+   BASH: cd php-geremo-source-@version@
+
+2. [MAY] (Re-)build the source tarball:
+
+   BASH: fakeroot ./debian/rules build-source-tarball
+   BASH: ls -al ../php-geremo-source-@version@.tar.bz2
+
+3. [MAY] Build the installation (release) tarball:
+
+   BASH: fakeroot ./debian/rules build-install-tarball
+   BASH: ls -al ../php-geremo-@version@.tar.bz2
+
+4. [MAY] Build the documentation tarball:
+
+   BASH: fakeroot ./debian/rules build-doc-tarball
+   BASH: ls -al ../php-geremo-doc-@version@.tar.bz2
+
+5. [MAY] Build the debian packages:
+
+   BASH: debuild -us -uc -b
+   BASH: ls -al ../php-geremo_@version@_all.deb ../php-geremo-doc_@version@_all.deb
+
+6. [MAY] Build the debian source package:
+
+   BASH: debuild -I'.git*' -us -uc -S
+   BASH: ls -al ../php-geremo_@version@.dsc ../php-geremo_@version@.tar.gz
+
+
 INSTALL
 -------
 
-NOTE: We will assume a previously working Apache/PHP/PEAR setup.
+WARNING: PHP-GEREMO is actively maintained on Linux. It has not been tested on Windows.
+NOTE: We assume a previously working Apache/PHP/PEAR setup.
 
-1.
+1. [MUST] Install PHP-GEREMO:
 
-[MUST] Install PHP-GEREMO (using PHP PEAR):
+   a. using the release tarball:
 
-   BASH: VERSION='<version>'
-   BASH: tar -xjf php-geremo-${VERSION}.tar.bz2
-   BASH: cd "./${VERSION}"
-   BASH: pear install ./src/php/packages.xml
+      BASH: INSTALL_DIR='<installation-directory>'
+      BASH: cd "${INSTALL_DIR}"
+      BASH: tar -xjf php-geremo-@version@.tar.bz2
 
-2.
+   OR
 
-[OPTIONAL] Build PHP-GEREMO documentation (using PhpDocumentor):
+   b. using the source tarball (and PHP PEAR installer):
 
-   BASH: pear install -o PhpDocumentor
-   BASH: VERSION='<version>'
-   BASH: tar -xjf php-geremo-${VERSION}.tar.bz2
-   BASH: cd "./${VERSION}"
-   BASH: DOC_DIR='<documentation-output-directory>'
-   BASH: ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" ./src/php ./src/doc
+      BASH: tar -xjf php-geremo-source-@version@.tar.bz2
+      BASH: cd php-geremo-source-@version@
+      BASH: pear install src/php/packages.xml
+
+   OR
+
+   c. using the debian package:
+
+      BASH: apt-get install php-geremo_@version@_all.deb
+
+2. [MAY] Install PHP-GEREMO documentation:
+
+   a. using the documentation tarball:
+
+      BASH: DOC_DIR='<documentation-directory>'
+      BASH: cd "${DOC_DIR}"
+      BASH: tar -xjf php-geremo-doc-@version@.tar.bz2
+
+   OR
+
+   b. using the source tarball (and PhpDocumentor):
+   
+      BASH: DOC_DIR='<documentation-directory>'
+      BASH: pear install -o PhpDocumentor
+      BASH: tar -xjf php-geremo-source-@version@.tar.bz2
+      BASH: cd php-geremo-source-@version@
+      BASH: ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/php src/doc
+
+   OR
+
+   c. using the debian package:
+
+      BASH: apt-get install php-geremo-doc_@version@_all.deb
 
 
 USAGE
 -----
 
 NOTE: For the sake of consistency, we will assume:
+ - an installation consistent with PHP PEAR standards
+   (in '/usr/share/php/...')
  - a password-protected application located at 'https://example.org/authreqd/'
    (corresponding to '/var/www/authreqd/')
  - the PHP Generic Registration Module located at 'https://example.org/register/'
    (corresponding to '/var/www/register/')
 
-1.
-
-[MUST] Create PHP-GEREMO's (dynamic) data directory:
+1. [MUST] Create PHP-GEREMO's (dynamic) data directory:
 
    BASH: mkdir -p /var/lib/geremo/data
 
    (consequently, PHP-GEREMO's 'data_dir' configuration setting shall be set to
    '/var/lib/geremo/data')
 
-2.
-
-[OPTIONAL] Create and customize PHP-GEREMO's (localized) resources directory:
+2. [MAY] Create and customize PHP-GEREMO's (localized) resources directory:
 
    BASH: cp -r /usr/share/php/GEREMO/resources /var/lib/geremo/.
 
    (consequently, PHP-GEREMO's 'resources_dir' configuration setting shall be set
    to '/var/lib/geremo/resources')
 
-3.
-
-[MUST] Create and customize PHP-GEREMO's configuration file:
+3. [MUST] Create and customize PHP-GEREMO's configuration file:
 
    BASH: mkdir -p /etc/php5/geremo
-   BASH: cp /usr/share/php/GEREMO/samples/config.php /etc/php5/geremo/config.php
+   BASH: cp /usr/share/php/docs/GEREMO/examples/config.php /etc/php5/geremo/config.php
 
    (consequently, Apache's 'PHP_GEREMO_CONFIG' environment variable shall be set
    to '/etc/php5/geremo/config.php')
 
-4.a.
+4.a. [MUST] Create and customize PHP-GEREMO's HTML document file:
 
-[MUST] Create and customize PHP-GEREMO's HTML document file:
-
-   BASH: cp /usr/share/php/GEREMO/samples/index.php /var/www/register/index.php
+   BASH: cp /usr/share/php/docs/GEREMO/examples/index.php /var/www/register/index.php
 
    (feel free to modify the HTML content to match your visual needs)
 
-4.b.
-
-[MUST] Configure PHP-GEREMO's HTML document access:
+4.b. [MUST] Configure PHP-GEREMO's HTML document access:
 
    BASH: echo "setenv PHP_GEREMO_CONFIG /etc/php5/geremo/config.php" \
                                       > /var/www/register/.htaccess
 
-5.
+5. [MAY] Create PHP-GEREMO's SQL backend:
 
-[OPTIONAL] Create PHP-GEREMO's SQL backend:
+   SEE: /usr/share/php/docs/GEREMO/examples/*.sql
 
-   SEE: /usr/share/php/GEREMO/samples/*.sql
-
-6.
-
-[MUST] Enable Apache's authentication/authorization:
+6. [MUST] Enable Apache's authentication/authorization:
 
    BASH: BACKEND='<backend>' # adapt to match your setup
-   BASH: cp /usr/share/php/GEREMO/samples/${BACKEND}.htaccess \
+   BASH: cp /usr/share/php/docs/GEREMO/examples/${BACKEND}.htaccess \
             /var/www/authreqd/.htaccess
+
