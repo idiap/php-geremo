@@ -180,7 +180,7 @@ $ pear install src/php/packages.xml
 <title>[OR] using the debian package</title>
 <screen>
 <![CDATA[
-$ apt-get install php-geremo_@version@_all.deb
+$ dpkg -i php-geremo_@version@_all.deb
 ]]>
 </screen>
 </refsect3>
@@ -223,7 +223,7 @@ $ ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/p
 <title>[OR] using the debian package</title>
 <screen>
 <![CDATA[
-$ apt-get install php-geremo-doc_@version@_all.deb
+$ dpkg -i php-geremo-doc_@version@_all.deb
 ]]>
 </screen>
 </refsect3>
