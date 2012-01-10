@@ -15,10 +15,7 @@ DEB_PACKAGE_SOURCE = php-geremo-source
 DEB_PACKAGE = php-geremo
 DEB_PACKAGE_DOC = php-geremo-doc
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	touch configure-stamp
+.PHONY: build clean install binary-indep binary-arch binary
 
 build: build-stamp
 
@@ -29,7 +26,7 @@ build-stamp: configure-stamp
 clean:
 	dh_testdir
 	dh_testroot
-	dh_clean build-stamp configure-stamp
+	dh_clean build-stamp
 
 install: build
 	dh_testdir
@@ -77,27 +74,28 @@ binary-indep: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
 
 build-source-tarball:
 	dh_testdir
 	dh_testroot
-	dh_clean build-stamp configure-stamp
+	dh_clean build-stamp
 	# Create the source tarball
 	mkdir -p /tmp/$(DEB_PACKAGE_SOURCE)-$(DEB_UPSTREAM_VERSION)
 	cp -rp src debian *.TXT /tmp/$(DEB_PACKAGE_SOURCE)-$(DEB_UPSTREAM_VERSION)/.
 	tar -C /tmp -cjf ../$(DEB_PACKAGE_SOURCE)-$(DEB_UPSTREAM_VERSION).tar.bz2 $(DEB_PACKAGE_SOURCE)-$(DEB_UPSTREAM_VERSION)
 	rm -rf /tmp/$(DEB_PACKAGE_SOURCE)-$(DEB_UPSTREAM_VERSION)
 
-build-install-tarball: install
+build-install-tarball:
 	# Create the installation tarball
+	# WARNING: make install before-hand!
 	mkdir -p /tmp/$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)/
 	cp -rp debian/$(DEB_PACKAGE)/usr/share/php/* /tmp/$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)/.
 	tar -C /tmp -cjf ../$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION).tar.bz2 $(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)
 	rm -rf /tmp/$(DEB_PACKAGE)-$(DEB_UPSTREAM_VERSION)
 
-build-doc-tarball: install
+build-doc-tarball:
 	# Create the documentation tarball
+	# WARNING: make install before-hand!
 	mkdir -p /tmp/$(DEB_PACKAGE_DOC)-$(DEB_UPSTREAM_VERSION)/docs/GEREMO/phpdoc
 	cp -rp debian/$(DEB_PACKAGE_DOC)/usr/share/php/docs/GEREMO/phpdoc/* /tmp/$(DEB_PACKAGE_DOC)-$(DEB_UPSTREAM_VERSION)/docs/GEREMO/phpdoc/.
 	tar -C /tmp -cjf ../$(DEB_PACKAGE_DOC)-$(DEB_UPSTREAM_VERSION).tar.bz2 $(DEB_PACKAGE_DOC)-$(DEB_UPSTREAM_VERSION)
