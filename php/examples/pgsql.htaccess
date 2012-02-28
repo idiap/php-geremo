@@ -1,4 +1,5 @@
 ## Authentication and Authorization
+Satisfy All
 AuthType Basic
 AuthName "Authentication Required"
 
