@@ -1137,7 +1137,7 @@ class GEREMO
     $sCommand .= ' '.escapeshellarg( $sUsername ).' '.escapeshellarg( $sPassword );
 
     // Execute
-    exec( $sCommand, $rsOutput, $riExit );
+    $riExit = -1; exec( $sCommand, $rsOutput, $riExit );
     if( $riExit != 0 )
     {
       trigger_error( '['.__METHOD__.'] Failed to update htpasswd file; '.$rsOutput, E_USER_WARNING );
