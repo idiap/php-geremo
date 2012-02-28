@@ -17,17 +17,17 @@ NOTE: By "build", we mean create the necessary tarballs/package required for
 
 2. [MAY] (Re-)build the source tarball:
 
-   BASH: fakeroot ./debian/rules build-source-tarball
+   BASH: ./debian/rules build-source-tarball
    BASH: ls -al ../php-geremo-source-@version@.tar.bz2
 
 3. [MAY] Build the installation (release) tarball:
 
-   BASH: fakeroot ./debian/rules build-install-tarball
+   BASH: ./debian/rules build-install-tarball
    BASH: ls -al ../php-geremo-@version@.tar.bz2
 
 4. [MAY] Build the documentation tarball:
 
-   BASH: fakeroot ./debian/rules build-doc-tarball
+   BASH: ./debian/rules build-doc-tarball
    BASH: ls -al ../php-geremo-doc-@version@.tar.bz2
 
 5. [MAY] Build the debian packages:
@@ -39,6 +39,12 @@ NOTE: By "build", we mean create the necessary tarballs/package required for
 
    BASH: debuild -I'.git*' -us -uc -S
    BASH: ls -al ../php-geremo_@version@.dsc ../php-geremo_@version@.tar.gz
+
+OR
+
+2-6. [SHOULD] Do it all with a single command
+
+   BASH: ./debian/rules release
 
 
 INSTALL
@@ -57,17 +63,17 @@ NOTE: We assume a previously working Apache/PHP/PEAR setup.
 
    OR
 
-   b. using the source tarball (and PHP PEAR installer):
+   b. using the debian package:
 
-      BASH: tar -xjf php-geremo-source-@version@.tar.bz2
-      BASH: cd php-geremo-source-@version@
-      BASH: pear install src/php/packages.xml
+      BASH: dpkg -i php-geremo_@version@_all.deb
 
    OR
 
-   c. using the debian package:
+   c. using the source tarball (and PHP PEAR installer):
 
-      BASH: dpkg -i php-geremo_@version@_all.deb
+      BASH: tar -xjf php-geremo-source-@version@.tar.bz2
+      BASH: cd php-geremo-source-@version@
+      BASH: pear install php/packages.xml
 
 2. [MAY] Install PHP-GEREMO documentation:
 
@@ -79,19 +85,19 @@ NOTE: We assume a previously working Apache/PHP/PEAR setup.
 
    OR
 
-   b. using the source tarball (and PhpDocumentor):
+   b. using the debian package:
+
+      BASH: dpkg -i php-geremo-doc_@version@_all.deb
+
+   OR
+
+   c. using the source tarball (and PhpDocumentor):
    
       BASH: DOC_DIR='<documentation-directory>'
       BASH: pear install -o PhpDocumentor
       BASH: tar -xjf php-geremo-source-@version@.tar.bz2
       BASH: cd php-geremo-source-@version@
-      BASH: ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/php src/doc
-
-   OR
-
-   c. using the debian package:
-
-      BASH: dpkg -i php-geremo-doc_@version@_all.deb
+      BASH: ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" php doc/phpdoc
 
 
 USAGE

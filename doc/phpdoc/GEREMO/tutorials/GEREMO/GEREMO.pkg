@@ -97,7 +97,7 @@ $ cd php-geremo-@version@
 <title>[MAY] (Re-)build the source tarball</title>
 <screen>
 <![CDATA[
-$ fakeroot ./debian/rules build-source-tarball
+$ ./debian/rules build-source-tarball
 $ ls -al ../php-geremo-source-@version@.tar.bz2
 ]]>
 </screen>
@@ -107,7 +107,7 @@ $ ls -al ../php-geremo-source-@version@.tar.bz2
 <title>[MAY] Build the installation (release) tarball</title>
 <screen>
 <![CDATA[
-$ fakeroot ./debian/rules build-install-tarball
+$ ./debian/rules build-install-tarball
 $ ls -al ../php-geremo-@version@.tar.bz2
 ]]>
 </screen>
@@ -117,7 +117,7 @@ $ ls -al ../php-geremo-@version@.tar.bz2
 <title>[MAY] Build the documentation tarball</title>
 <screen>
 <![CDATA[
-$ fakeroot ./debian/rules build-doc-tarball
+$ ./debian/rules build-doc-tarball
 $ ls -al ../php-geremo-doc-@version@.tar.bz2
 ]]>
 </screen>
@@ -139,6 +139,15 @@ $ ls -al ../php-geremo_@version@_all.deb ../php-geremo-doc_@version@_all.deb
 <![CDATA[
 $ debuild -I'.git*' -us -uc -S
 $ ls -al ../php-geremo_@version@.dsc ../php-geremo_@version@.tar.gz
+]]>
+</screen>
+</refsect2>
+
+<refsect2 id="{@id build_all}">
+<title>[SHOULD] Do it all with a single command</title>
+<screen>
+<![CDATA[
+$ ./debian/rules release
 ]]>
 </screen>
 </refsect2>
@@ -171,7 +180,7 @@ $ tar -xjf php-geremo-@version@.tar.bz2
 <![CDATA[
 $ tar -xjf php-geremo-source-@version@.tar.bz2
 $ cd php-geremo-@version@
-$ pear install src/php/packages.xml
+$ pear install php/packages.xml
 ]]>
 </screen>
 </refsect3>
@@ -214,7 +223,7 @@ $ DOC_DIR='<documentation-directory>'
 $ pear install -o PhpDocumentor
 $ tar -xjf php-geremo-source-@version@.tar.bz2
 $ cd php-geremo-@version@
-$ ./src/util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" src/php src/doc
+$ ./util/makedoc GEREMO "PHP Generic Registration Module" "${DOC_DIR}" php doc/phpdoc
 ]]>
 </screen>
 </refsect3>
