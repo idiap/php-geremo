@@ -49,9 +49,10 @@
 #$_CONFIG['email_registration_notice_address'] = ''; // string
 
 # Registration/Authentication backend. Supported backends are:
-#  'htpasswd': Apache's 'htpasswd' file
+#  'htpasswd-noexec': Apache's 'htpasswd' file (without using <SAMP>exec( 'htpasswd [...]' )</SAMP>)
+#  'htpasswd': Apache's 'htpasswd' file (using <SAMP>exec( 'htpasswd [...]' )</SAMP>)
 #  'sql': SQL database (see 'sql_*' parameters below)
-#$_CONFIG['backend'] = 'htpasswd'; // string
+#$_CONFIG['backend'] = 'htpasswd-noexec'; // string
 
 
 ################################################################################

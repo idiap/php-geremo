@@ -89,7 +89,7 @@ class GEREMO
     $_CONFIG['captcha_font_size'] = 32;
     $_CONFIG['email_sender_address'] = '';
     $_CONFIG['email_registration_notice_address'] = '';
-    $_CONFIG['backend'] = 'htpasswd';
+    $_CONFIG['backend'] = 'htpasswd-noexec';
     $_CONFIG['data_email_whitelist'] = '';
     $_CONFIG['data_email_blacklist'] = '';
     $_CONFIG['data_password_minlength'] = 10;
@@ -678,6 +678,9 @@ class GEREMO
         // Create/update account
         switch( $this->amCONFIG['backend'] )
         {
+        case 'htpasswd-noexec':
+          $this->registerHtpasswdNoExec( $amFormData['email'], $sPassword );
+          break;
         case 'htpasswd':
           $this->registerHtpasswd( $amFormData['email'], $sPassword );
           break;
@@ -1105,6 +1108,71 @@ class GEREMO
   /*
    * METHODS: Registration
    ********************************************************************************/
+
+  /** Register (save/update) user credentials in Apache's htpasswd file (without using 'exec()')
+   *
+   * @param string $sUsername User (login) name
+   * @param string $sPassword Password
+   */
+  private function registerHtpasswdNoExec( $sUsername, $sPassword )
+  {
+    // Password hash
+    switch( $this->amCONFIG['data_password_hash'] )
+    {
+    case MHASH_SHA1:
+      // Plenty of SSHA htpasswd examples but they must be only for nginx...
+      //$mSalt = mcrypt_create_iv( 16, MCRYPT_DEV_URANDOM );
+      //$sHash = base64_encode( sha1( $sPassword.$mSalt, true ).$mSalt );
+      //$sHash = '{SSHA}'.$sHash;
+      $sHash = '{SHA}'.base64_encode( sha1( $sPassword, true ) );
+      break;
+    default:
+      trigger_error( '['.__METHOD__.'] Unsupported password hash function', E_USER_WARNING );
+      throw new Exception( $this->getText( 'error:internal_error' ) );
+    }
+    
+    // Execute
+    // ... load existing credentials
+    $asHtpasswd = file( $this->amCONFIG['data_dir'].'/htpasswd', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+    if( !is_array( $asHtpasswd ) )
+    {
+      trigger_error( '['.__METHOD__.'] Failed to read htpasswd file', E_USER_WARNING );
+      throw new Exception( $this->getText( 'error:internal_error' ) );
+    }
+    // ... add/replace new credentials
+    $asCredentials = array();
+    array_walk( $asHtpasswd, function( $mValue, $mKey ) use ( &$asCredentials )
+                {
+                  list( $sUsername, $sHash ) = explode( ':', $mValue, 2 );
+                  $asCredentials[ $sUsername ] = $sHash;
+                }
+                );
+    $asCredentials[$sUsername] = $sHash;
+    // ... save credentials
+    ignore_user_abort( true );
+    $rHtpasswdFile = fopen( $this->amCONFIG['data_dir'].'/htpasswd', 'w' );
+    if( $rHtpasswdFile === false )
+    {
+      ignore_user_abort( false );
+      trigger_error( '['.__METHOD__.'] Failed to open htpasswd file for writing', E_USER_WARNING );
+      throw new Exception( $this->getText( 'error:internal_error' ) );
+    }
+    if( flock( $rHtpasswdFile, LOCK_EX ) )
+    {
+      foreach( $asCredentials as $sUsername => $sHash )
+        fputs( $rHtpasswdFile, $sUsername.':'.$sHash."\n" );
+      flock( $rHtpasswdFile, LOCK_UN );
+    }
+    else
+    {
+      fclose( $rHtpasswdFile );
+      ignore_user_abort( false );
+      trigger_error( '['.__METHOD__.'] Failed to lock htpasswd file for writing', E_USER_WARNING );
+      throw new Exception( $this->getText( 'error:internal_error' ) );
+    }
+    fclose( $rHtpasswdFile );
+    ignore_user_abort( false );
+  }
 
   /** Register (save/update) user credentials in Apache's htpasswd file
    *
