@@ -28,8 +28,12 @@
 # CRITICAL: THIS DIRECTORY MUST NOT BE ACCESSIBLE FROM THE WEB!!!
 #$_CONFIG['data_dir'] = dirname( __FILE__ ).'/data/GEREMO/data'; // is_writable( path )
 
-# The URL to redirect users in order to proceed to authentication.
+# The (hardcoded/default) login URL to redirect users in order to proceed to authentication.
 #$_CONFIG['login_url'] = ''; // string
+
+# The (dynamic/custom) login URL validation Perl regular expression (without the '/' prefix/suffix).
+# ATTENTION: This parameter MUST be set in order to allow the login URL to be dynamically set
+#$_CONFIG['login_url_validation_preg'] = ''; // string
 
 # Captcha image's width, height and font size.
 #$_CONFIG['captcha_width'] = 240; // integer

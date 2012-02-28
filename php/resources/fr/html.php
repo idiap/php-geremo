@@ -56,5 +56,5 @@ Veillez également a fournir un mot de passe suffisament long et complexe. La com
 
 <?php } elseif( $sView == 'error' ) { ?>
 <H2>Erreur d'enregistrement</H2>
-<P>Une erreur est survenue pendant le processus d'enregistrement. Essayez s'il-vous-plaît de vous <A HREF="?">enregistrer</A> à nouveau (et accepter nos excuses pour ce désagrément).</P>
+<P>Une erreur est survenue pendant le processus d'enregistrement. Essayez s'il-vous-plaît de vous <A HREF="<?php echo $oGEREMO->getResetURL(); ?>">enregistrer</A> à nouveau (et accepter nos excuses pour ce désagrément).</P>
 <?php } ?>

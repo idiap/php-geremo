@@ -56,5 +56,5 @@ Also, please supply a password long and complex enough. Password complexity incr
 
 <?php } elseif( $sView == 'error' ) { ?>
 <H2>Registration Error</H2>
-<P>An error occured during the registration process. Please try to <A HREF="?">register</A> again (and sorry for the inconvenience).</P>
+<P>An error occured during the registration process. Please try to <A HREF="<?php echo $oGEREMO->getResetURL(); ?>">register</A> again (and sorry for the inconvenience).</P>
 <?php } ?>

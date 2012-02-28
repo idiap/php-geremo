@@ -83,6 +83,7 @@ class GEREMO
     $_CONFIG['resources_dir'] = dirname( __FILE__ ).'/data/GEREMO/resources';
     $_CONFIG['data_dir'] = dirname( __FILE__ ).'/data/GEREMO/data';
     $_CONFIG['login_url'] = '';
+    $_CONFIG['login_url_validation_preg'] = '';
     $_CONFIG['captcha_width'] = 240;
     $_CONFIG['captcha_height'] = 120;
     $_CONFIG['captcha_font_size'] = 32;
@@ -158,7 +159,7 @@ class GEREMO
       if( !is_int( $_CONFIG[$p] ) )
         trigger_error( '['.__METHOD__.'] Parameter must be an integer ('.$p.')', E_USER_ERROR );
     // ... is string
-    foreach( array( 'secret', 'locales', 'login_url',
+    foreach( array( 'secret', 'locales', 'login_url', 'login_url_validation_preg',
                     'email_sender_address', 'email_registration_notice_address',
                     'data_email_whitelist', 'data_email_blacklist',
                     'backend',
@@ -298,13 +299,45 @@ class GEREMO
     return $this->amCONFIG['resources_dir'];
   }
 
+  /** Check if dynamic login URL assignement is configured/allowed
+   *
+   * @return boolean
+   */
+  public function isDynamicLoginURLAllowed()
+  {
+    return !empty( $this->amCONFIG['login_url_validation_preg'] );
+  }
+
   /** Retrieve the login URL
    *
    * @return string Login URL
    */
   public function getLoginURL()
   {
-    return $this->amCONFIG['login_url'];
+    static $sLoginURL;
+    if( is_null( $sLoginURL ) )
+    {
+      if( $this->isDynamicLoginURLAllowed() and isset( $_SESSION['GEREMO_LoginURL'] ) )
+      {
+        $sLoginURL = $_SESSION['GEREMO_LoginURL'];
+      }
+      else
+      {
+        $sLoginURL = $this->amCONFIG['login_url'];
+      }
+    }
+    return $sLoginURL;
+  }
+
+  /** Retrieve the reset URL (in case of internal error)
+   *
+   * @return string Reset URL
+   */
+  public function getResetURL()
+  {
+    if( $this->isDynamicLoginURLAllowed() and isset( $_SESSION['GEREMO_LoginURL'] ) )
+      return '?login='.urlencode( $_SESSION['GEREMO_LoginURL'] );
+    return '?';
   }
 
   /** Retrieve (localized) text
@@ -345,6 +378,7 @@ class GEREMO
       $_TEXT['label:fax'] = 'Fax';
       $_TEXT['label:submit'] = 'Submit';
       $_TEXT['error:internal_error'] = 'Internal error. Please contact the system administrator.';
+      $_TEXT['error:invalid_login_url'] = 'Invalid login URL. Please contact the system administrator.';
       $_TEXT['error:invalid_form_data'] = 'Invalid form data. Please contact the system administrator.';
       $_TEXT['error:unsecure_channel'] = 'Unsecure channel. Please use an encrypted channel (SSL).';
       $_TEXT['error:invalid_session_state'] = 'Invalid session.';
@@ -458,6 +492,7 @@ class GEREMO
         break;
 
       default:
+        // Check state
         if( !isset( $_SESSION['GEREMO_State'] ) or $_SESSION['GEREMO_State'] != 'request' ) // Unexpected state
         {
           if( !isset( $_SESSION['GEREMO_State'] ) or $_SESSION['GEREMO_State'] == 'confirm' ) // Valid state transition
@@ -471,6 +506,8 @@ class GEREMO
           }
         }
         $_SESSION['GEREMO_State'] = 'request';
+
+        // View
         $sView = 'default';
       }
 
@@ -513,7 +550,7 @@ class GEREMO
         $sCaptcha = trim( $_POST['captcha'] );
 
         // Check e-mail address
-        if( !preg_match( '/s*(\w+[-_.])*\w+@(\w+[-_.])*\w+\.\w+\s*/AD', $amFormData['email'] ) )
+        if( !preg_match( '/^(\w+[-_.])*\w+@(\w+[-_.])*\w+\.\w+$/AD', $amFormData['email'] ) )
         {
           $bSessionBailOut = false;
           throw new Exception( $this->getText( 'error:invalid_email' )."\n[".$this->getText( 'label:email' ).']' );
@@ -674,6 +711,37 @@ class GEREMO
         $sView = 'confirm';
         break;
 
+      default:
+        // Login URL
+        if( $this->isDynamicLoginURLAllowed() )
+        {
+          if( isset( $_GET['login'] ) )
+          {
+            $sLoginURL = trim( $_GET['login'] );
+            if( !empty( $sLoginURL ) )
+            {
+              if( !preg_match( '/^https?:\/\/(\w+[-_.])*\w+\.\w+/AD', $sLoginURL ) or !preg_match( '/'.$this->amCONFIG['login_url_validation_preg'].'/AD', $sLoginURL ) )
+              {
+                trigger_error( '['.__METHOD__.'] Invalid login URL (validation); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
+                throw new Exception( $this->getText( 'error:invalid_login_url' ) );
+              }
+              $_SESSION['GEREMO_LoginURL'] = $sLoginURL;
+            }
+            else
+              unset( $_SESSION['GEREMO_LoginURL'] );
+          }
+        }
+        else
+        {
+          unset( $_SESSION['GEREMO_LoginURL'] );
+          if( isset( $_GET['login'] ) )
+          {
+            trigger_error( '['.__METHOD__.'] Invalid login URL (dynamic assignement is not allowed); IP='.( isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown' ), E_USER_WARNING );
+            throw new Exception( $this->getText( 'error:internal_error' ) );
+          }
+        }
+
+
       }
 
     }
@@ -794,14 +862,17 @@ class GEREMO
    */
   private function resetSession()
   {
-    // Save session locale
+    // Save session locale and login URL
     $sLocale = $this->getCurrentLocale();
+    $sLoginURL = ( $this->isDynamicLoginURLAllowed() and isset( $_SESSION['GEREMO_LoginURL'] ) ) ? $_SESSION['GEREMO_LoginURL'] : null;
 
     // Clear session and start a new one.
     session_regenerate_id( true );
 
-    // Restore session locale
+    // Restore session locale and login URL
     $_SESSION['GEREMO_Locale'] = $sLocale;
+    if( !is_null( $sLoginURL ) )
+      $_SESSION['GEREMO_LoginURL'] = $sLoginURL;
   }
 
 

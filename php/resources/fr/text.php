@@ -28,6 +28,7 @@ $_TEXT['label:phone'] = 'Téléphone';
 $_TEXT['label:fax'] = 'Fax';
 $_TEXT['label:submit'] = 'Valider';
 $_TEXT['error:internal_error'] = 'Erreur interne. Veuillez s\'il-vous-plaît prendre contact avec l\'administrateur.';
+$_TEXT['error:invalid_login_url'] = 'Adresse de login invalide. Veuillez s\'il-vous-plaît prendre contact avec l\'administrateur.';
 $_TEXT['error:invalid_form_data'] = 'Données invalides. Veuillez s\'il-vous-plaît prendre contact avec l\'administrateur.';
 $_TEXT['error:unsecure_channel'] = 'Canal non sécurisé. Veuillez s\'il-vous-plaît utiliser un canal encrypté (SSL).';
 $_TEXT['error:invalid_session_state'] = 'État de session invalide.';
