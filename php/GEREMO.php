@@ -199,7 +199,7 @@ class GEREMO
   private function getKeys()
   {
     // Build/retrieve keys
-    $sKeysFile = $this->amCONFIG['data_dir'].'/keys.dat';
+    $sKeysFile = $this->amCONFIG['data_dir'].'/.htkeys';
     $iNow = time(); // in seconds
     $iKeySlot = date( 'G', $iNow ); // hour-slot
     $iNow = (integer)( $iNow / 3600 ); // in hours
@@ -1130,27 +1130,33 @@ class GEREMO
       trigger_error( '['.__METHOD__.'] Unsupported password hash function', E_USER_WARNING );
       throw new Exception( $this->getText( 'error:internal_error' ) );
     }
-    
+
+    // Password file
+    $sHtpasswdPath = $this->amCONFIG['data_dir'].'/.htpasswd';
+
     // Execute
     // ... load existing credentials
-    $asHtpasswd = file( $this->amCONFIG['data_dir'].'/htpasswd', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
-    if( !is_array( $asHtpasswd ) )
+    $asCredentials = array();
+    if( is_readable( $sHtpasswdPath ) )
     {
-      trigger_error( '['.__METHOD__.'] Failed to read htpasswd file', E_USER_WARNING );
-      throw new Exception( $this->getText( 'error:internal_error' ) );
+      $asHtpasswd = file( $sHtpasswdPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+      if( !is_array( $asHtpasswd ) )
+      {
+        trigger_error( '['.__METHOD__.'] Failed to read htpasswd file', E_USER_WARNING );
+        throw new Exception( $this->getText( 'error:internal_error' ) );
+      }
+      array_walk( $asHtpasswd, function( $mValue, $mKey ) use ( &$asCredentials )
+                  {
+                    list( $sUsername, $sHash ) = explode( ':', $mValue, 2 );
+                    $asCredentials[ $sUsername ] = $sHash;
+                  }
+                  );
     }
     // ... add/replace new credentials
-    $asCredentials = array();
-    array_walk( $asHtpasswd, function( $mValue, $mKey ) use ( &$asCredentials )
-                {
-                  list( $sUsername, $sHash ) = explode( ':', $mValue, 2 );
-                  $asCredentials[ $sUsername ] = $sHash;
-                }
-                );
     $asCredentials[$sUsername] = $sHash;
     // ... save credentials
     ignore_user_abort( true );
-    $rHtpasswdFile = fopen( $this->amCONFIG['data_dir'].'/htpasswd', 'w' );
+    $rHtpasswdFile = fopen( $sHtpasswdPath, 'w' );
     if( $rHtpasswdFile === false )
     {
       ignore_user_abort( false );
@@ -1199,7 +1205,7 @@ class GEREMO
     }
     
     // Password file
-    $sCommand .= ' '.escapeshellarg( $this->amCONFIG['data_dir'].'/htpasswd' );
+    $sCommand .= ' '.escapeshellarg( $this->amCONFIG['data_dir'].'/.htpasswd' );
 
     // Username and password
     $sCommand .= ' '.escapeshellarg( $sUsername ).' '.escapeshellarg( $sPassword );
