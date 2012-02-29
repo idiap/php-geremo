@@ -30,7 +30,7 @@ The idea behind this module is to:
  <date>2011-10-11</date>
  <time>14:45:00</time>
  <version>
-  <release>1.0.0RC4</release>
+  <release>1.0.0</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -112,7 +112,7 @@ The idea behind this module is to:
  <changelog>
   <release>
    <version>
-    <release>1.0.0RC4</release>
+    <release>1.0.0</release>
     <api>1.0.0</api>
    </version>
    <stability>
