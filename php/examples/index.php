@@ -67,7 +67,7 @@ DIV.GEREMO A:hover { TEXT-DECORATION:underline; }
 <?php
 /** Include localized HTML body
  */
-require_once$oGEREMO->getResourcesDir().'/'.$oGEREMO->getCurrentLocale().'/html.php';
+require_once $oGEREMO->getResourcesDir().'/'.$oGEREMO->getCurrentLocale().'/html.php';
 ?>
 </DIV>
 </BODY>
