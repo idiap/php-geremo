@@ -1145,12 +1145,11 @@ class GEREMO
         trigger_error( '['.__METHOD__.'] Failed to read htpasswd file', E_USER_WARNING );
         throw new Exception( $this->getText( 'error:internal_error' ) );
       }
-      array_walk( $asHtpasswd, function( $mValue, $mKey ) use ( &$asCredentials )
-                  {
-                    list( $sUsername, $sHash ) = explode( ':', $mValue, 2 );
-                    $asCredentials[ $sUsername ] = $sHash;
-                  }
-                  );
+      foreach( $asHtpasswd as $mValue )
+      {
+        list( $sUsername, $sHash ) = explode( ':', $mValue, 2 );
+        $asCredentials[ $sUsername ] = $sHash;
+      }
     }
     // ... add/replace new credentials
     $asCredentials[$sUsername] = $sHash;
