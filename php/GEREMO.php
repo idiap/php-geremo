@@ -263,8 +263,9 @@ class GEREMO
     static $sLocale;
     if( is_null( $sLocale ) )
     {
-      $sLocale = strstr( $this->amCONFIG['locales'], ',', true );
-      if( $sLocale === false ) $sLocale = $this->amCONFIG['locales'];
+      $i = strpos( $this->amCONFIG['locales'], ',' );
+      if( $i === false ) $sLocale = $this->amCONFIG['locales'];
+      else $sLocale = substr( $this->amCONFIG['locales'], 0, $i );
     }
     return $sLocale;
   }
