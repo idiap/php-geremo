@@ -1,5 +1,10 @@
 -- INDENTING (emacs/vi): -*- mode:sql; tab-width:2; c-basic-offset:2; intent-tabs-mode:nil; -*- ex: set tabstop=2 expandtab:
 
+
+/*
+ * TABLE
+ */
+
 CREATE TABLE tb_GEREMO_Account (
   username varchar(50) NOT NULL CONSTRAINT uq_GEREMO_Account UNIQUE,
   password varchar(50),
@@ -16,8 +21,35 @@ CREATE TABLE tb_GEREMO_Account (
   state varchar(50),
   country varchar(50),
   phone varchar(50),
-  fax varchar(50)
+  fax varchar(50),
+  created timestamp NOT NULL DEFAULT( CURRENT_TIMESTAMP ), -- forced via trigger
+  updated timestamp NOT NULL DEFAULT( CURRENT_TIMESTAMP )  -- forced via trigger
 );
+
+
+/*
+ * TRIGGERS
+ */
+
+CREATE OR REPLACE FUNCTION tf__tb_GEREMO_Account__b() RETURNS TRIGGER AS '
+BEGIN
+  IF TG_OP=''INSERT'' THEN
+    new.created := CURRENT_TIMESTAMP;
+    new.updated := CURRENT_TIMESTAMP;
+  ELSIF TG_OP=''UPDATE'' THEN
+    new.created := old.created; -- creation timestamp MUST NOT be modified
+    new.updated := CURRENT_TIMESTAMP;
+  ELSIF TG_OP=''DELETE'' THEN
+    RETURN old;
+  END IF;
+  RETURN new;
+END
+' LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+
+
+/*
+ * FUNCTION
+ */
 
 CREATE OR REPLACE FUNCTION fn_GEREMO_Register(
   text, text, text, text, text, text, text, text, text, text, text, text, text, text, text, text

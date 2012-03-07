@@ -1,8 +1,13 @@
 -- INDENTING (emacs/vi): -*- mode:sql; tab-width:2; c-basic-offset:2; intent-tabs-mode:nil; -*- ex: set tabstop=2 expandtab:
 
+
+/*
+ * TABLE
+ */
+
 CREATE TABLE tb_GEREMO_Account (
   username varchar(50) NOT NULL,
-  password varchar(50),
+  password varchar(50) NOT NULL,
   title varchar(50),
   firstname varchar(50),
   lastname varchar(50),
@@ -16,9 +21,41 @@ CREATE TABLE tb_GEREMO_Account (
   state varchar(50),
   country varchar(50),
   phone varchar(50),
-  fax varchar(50)
+  fax varchar(50),
+  created timestamp NOT NULL DEFAULT 0, -- set/forced via trigger
+  updated timestamp NOT NULL DEFAULT 0  -- set/forced via trigger
 );
 ALTER TABLE tb_GEREMO_Account ADD UNIQUE INDEX uq_GEREMO_Account ( username );
+
+
+/*
+ * TRIGGERS
+ */
+
+DROP TRIGGER IF EXISTS tg__tb_GEREMO_Account__bi;
+DELIMITER $
+CREATE DEFINER = CURRENT_USER TRIGGER tg__tb_GEREMO_Account__bi BEFORE INSERT ON tb_GEREMO_Account
+FOR EACH ROW 
+BEGIN
+  SET NEW.created = CURRENT_TIMESTAMP();
+  SET NEW.updated = CURRENT_TIMESTAMP();
+END $
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS tg__tb_GEREMO_Account__bu;
+DELIMITER $
+CREATE DEFINER = CURRENT_USER TRIGGER tg__tb_GEREMO_Account__bu BEFORE UPDATE ON tb_GEREMO_Account
+FOR EACH ROW
+BEGIN
+  SET NEW.created = OLD.created; -- creation timestamp MUST NOT be modified
+  SET NEW.updated = CURRENT_TIMESTAMP();
+END $
+DELIMITER ;
+
+
+/*
+ * FUNCTION
+ */
 
 DROP FUNCTION IF EXISTS fn_GEREMO_Register;
 DELIMITER $
