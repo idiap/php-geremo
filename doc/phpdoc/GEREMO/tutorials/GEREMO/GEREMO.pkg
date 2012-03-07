@@ -36,7 +36,7 @@ Cedric Dufour, Idiap Research Institute
 <refsect2 id="{@id specs_depends}">
 <title>Dependencies</title>
 <itemizedList>
-<listitem>[MUST] <literal>PHP 5.3</literal> or later (it may work on earlier PHP 5 versions; this is untested though)</listitem>
+<listitem>[MUST] <literal>PHP 5.2</literal> or later (it may work on earlier PHP 5 versions; this is untested though)</listitem>
 <listitem>[MUST] PHP <literal>mhash</literal> extension</listitem>
 <listitem>[MUST] PHP <literal>mcrypt</literal> extension</listitem>
 <listitem>[MUST] PHP <literal>PEAR::Text_CAPTCHA</literal> extension (and dependencies)</listitem>

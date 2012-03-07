@@ -29,7 +29,7 @@ The idea behind this module is to:
 Dependencies
 ------------
 
- - [MUST] PHP 5.3 or later (it may work on earlier PHP 5 versions; this is untested though)
+ - [MUST] PHP 5.2 or later (it may work on earlier PHP 5 versions; this is untested though)
  - [MUST] PHP mhash extension
  - [MUST] PHP mcrypt extension
  - [MUST] PHP PEAR::Text_CAPTCHA extension (and dependencies)
