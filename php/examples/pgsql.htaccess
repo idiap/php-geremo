@@ -1,7 +1,7 @@
 ## Authentication and Authorization
 Satisfy All
 AuthType Basic
-AuthName "Authentication Required"
+AuthName "Authentication Required (press <Cancel> to proceed to registration)"
 
 # Basic Authentication
 # (required for proper interaction with 'mod_auth_pgsql')
@@ -24,3 +24,6 @@ Auth_PG_hash_type MD5
 
 # Authorization
 Require valid-user
+
+# Automatic redirection to registration backend
+ErrorDocument 401 "<HTML><HEAD><META HTTP-EQUIV=\"REFRESH\" CONTENT=\"0; url=https://registration-server.domain.tld/url-path/to/PHP-GEREMO/?login=https://protected-resource.domain.tld/\"/></HEAD></HTML>"
