@@ -14,6 +14,10 @@ CRITICAL: THIS FILE MUST NOT BE ACCESSIBLE BY HTTP CLIENTS!!!
 In other words, it must be accessible by PHP by NOT through any Apache's
 URL location.
 
+The 'apache.conf' file contains the recommended Apache configuration for
+the server hosting PHP-GEREMO. PHP session settings must in particular be
+adjusted to provide increased security and match PHP-GEREMO requirements.
+
 The 'index.php' file contains the PHP/HTML code necessary to make the PHP
 Generic Registration Module accessible via an Apache's URL location.
 You should copy this file into your web application's path and then modify
