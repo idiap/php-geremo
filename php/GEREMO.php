@@ -379,6 +379,7 @@ class GEREMO
       $_TEXT['label:fax'] = 'Fax';
       $_TEXT['label:submit'] = 'Submit';
       $_TEXT['error:internal_error'] = 'Internal error. Please contact the system administrator.';
+      $_TEXT['error:register_error'] = 'Registration refused. Please contact the system administrator.';
       $_TEXT['error:invalid_login_url'] = 'Invalid login URL. Please contact the system administrator.';
       $_TEXT['error:invalid_form_data'] = 'Invalid form data. Please contact the system administrator.';
       $_TEXT['error:unsecure_channel'] = 'Unsecure channel. Please use an encrypted channel (SSL).';
@@ -1310,7 +1311,7 @@ class GEREMO
       if( (boolean)(integer)$sResult !== true )
       {
         trigger_error( '['.__METHOD__.'] Invalid result from database function', E_USER_WARNING );
-        throw new Exception( $this->getText( 'error:internal_error' ) );
+        throw new Exception( $this->getText( 'error:register_error' ) );
       }
 
     }

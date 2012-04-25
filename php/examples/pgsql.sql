@@ -24,6 +24,7 @@ CREATE TABLE tb_GEREMO_Account (
   fax varchar(50),
   created timestamp NOT NULL DEFAULT( CURRENT_TIMESTAMP ), -- forced via trigger
   updated timestamp NOT NULL DEFAULT( CURRENT_TIMESTAMP )  -- forced via trigger
+  blocked timestamp
 );
 
 
@@ -86,7 +87,7 @@ BEGIN
       street = _street, street2 = _street2, pobox = _pobox,
       city = _city, zipcode = _zipcode, state = _state, country = _country,
       phone = _phone, fax = _fax
-    WHERE username = _username;
+    WHERE username = _username AND blocked IS NULL;
 
   ELSE
 
@@ -107,6 +108,39 @@ BEGIN
     );
 
   END IF;
+
+  RETURN FOUND;
+END
+' LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION fn_GEREMO_Block(
+  text
+) RETURNS boolean AS '
+DECLARE
+-- ARGUMENTS
+  _username ALIAS FOR $1;
+BEGIN
+
+  UPDATE tb_GEREMO_Account SET
+    password = MD5( RANDOM()::text ),
+    blocked = CURRENT_TIMESTAMP
+  WHERE username = _username;
+
+  RETURN FOUND;
+END
+' LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+
+CREATE OR REPLACE FUNCTION fn_GEREMO_Unblock(
+  text
+) RETURNS boolean AS '
+DECLARE
+-- ARGUMENTS
+  _username ALIAS FOR $1;
+BEGIN
+
+  UPDATE tb_GEREMO_Account SET
+    blocked = NULL
+  WHERE username = _username;
 
   RETURN FOUND;
 END

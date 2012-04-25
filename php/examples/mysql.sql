@@ -23,7 +23,8 @@ CREATE TABLE tb_GEREMO_Account (
   phone varchar(50),
   fax varchar(50),
   created timestamp NOT NULL DEFAULT 0, -- set/forced via trigger
-  updated timestamp NOT NULL DEFAULT 0  -- set/forced via trigger
+  updated timestamp NOT NULL DEFAULT 0, -- set/forced via trigger
+  blocked timestamp NOT NULL DEFAULT 0
 );
 ALTER TABLE tb_GEREMO_Account ADD UNIQUE INDEX uq_GEREMO_Account ( username );
 
@@ -96,7 +97,7 @@ BEGIN
       street = _street, street2 = _street2, pobox = _pobox,
       city = _city, zipcode = _zipcode, state = _state, country = _country,
       phone = _phone, fax = _fax
-    WHERE username = _username;
+    WHERE username = _username AND blocked = 0;
 
   ELSE
 
@@ -117,6 +118,51 @@ BEGIN
     );
 
   END IF;
+
+  RETURN ROW_COUNT() >= 1;
+
+END $
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS fn_GEREMO_Block;
+DELIMITER $
+CREATE
+DEFINER = CURRENT_USER
+FUNCTION fn_GEREMO_Block(
+  _username text
+) RETURNS boolean
+LANGUAGE SQL
+NOT DETERMINISTIC
+MODIFIES SQL DATA
+SQL SECURITY DEFINER
+BEGIN
+
+  UPDATE tb_GEREMO_Account SET
+    password = MD5( RAND() ),
+    blocked = CURRENT_TIMESTAMP()
+  WHERE username = _username;
+
+  RETURN ROW_COUNT() >= 1;
+
+END $
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS fn_GEREMO_Unblock;
+DELIMITER $
+CREATE
+DEFINER = CURRENT_USER
+FUNCTION fn_GEREMO_Unblock(
+  _username text
+) RETURNS boolean
+LANGUAGE SQL
+NOT DETERMINISTIC
+MODIFIES SQL DATA
+SQL SECURITY DEFINER
+BEGIN
+
+  UPDATE tb_GEREMO_Account SET
+    blocked = 0
+  WHERE username = _username;
 
   RETURN ROW_COUNT() >= 1;
 
