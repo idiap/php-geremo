@@ -75,7 +75,7 @@ Cedric Dufour, Idiap Research Institute
 
 <refsect1 id="{@id download}">
 <title>Downloading</title>
-<para>{@link http://www.idiap.ch/software/php-geremo/download/ download tree...}</para>
+<para>{@link https://github.com/idiap/php-geremo/downloads download tree...}</para>
 </refsect1>
 
 
@@ -84,7 +84,13 @@ Cedric Dufour, Idiap Research Institute
 <para><emphasis>NOTE:</emphasis> By &quot;build&quot;, we mean create the necessary tarballs/package required for installation (according to the INSTALL section below) or distribution.</para>
 
 <refsect2 id="{@id build_tree}">
-<title>[MUST] Obtain the source tarball</title>
+<title>[MUST] Obtain the source code</title>
+<screen>
+<![CDATA[
+$ git clone https://github.com/idiap/php-geremo
+]]>
+</screen>
+<para>[OR]</para>
 <screen>
 <![CDATA[
 $ tar -xjf php-geremo-source-@version@.tar.bz2
@@ -334,7 +340,7 @@ $ chown root.www-data /var/www/authreqd/.htaccess
 
 <refsect1 id="{@id documentation}">
 <title>Further documentation</title>
-<para>The full documentation of PHP-GEREMO is available - in (phpDocumentor-generated) HTML format and including source code - at {@link http://www.idiap.ch/software/php-geremo/documentation/ http://www.idiap.ch/software/php-geremo/documentation/}.</para>
+<para>The full documentation of PHP-GEREMO (including source code) is part of this (phpDocumentor-generated) HTML documentation; make sure to browse through the expandable tree located on the left of this text, as well as switch the documentation context using the drop list located on top of this text.</para>
 </refsect1>
 
 </refentry> 

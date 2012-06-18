@@ -2,7 +2,7 @@
 <package packagerversion="1.7.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>GEREMO</name>
  <channel>pear.php.net</channel>
- <summary>PHP Gerenic Registration Mocule (PHP-GEREMO)</summary>
+ <summary>PHP Generic Registration Module (PHP-GEREMO)</summary>
  <description>The PHP Generic Registration Module is a PHP class which allows to implement
 "double opt-in" users registration as an independent and foolproof add-on to
 any existing application.
@@ -38,7 +38,7 @@ The idea behind this module is to:
   <api>stable</api>
  </stability>
  <license uri="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License (GPL) Version 3</license>
- <notes>Initial release</notes>
+ <notes>(see https://github.com/idiap/php-geremo for changelog)</notes>
  <contents>
   <dir name="/">
    <file name="README.TXT" role="doc" />
@@ -56,6 +56,7 @@ The idea behind this module is to:
     <file name="index.php" role="doc" />
     <file name="mysql.sql" role="doc" />
     <file name="pgsql.sql" role="doc" />
+    <file name="apache.conf" role="doc" />
     <file name="htpasswd.htaccess" role="doc" />
     <file name="mysql.htaccess" role="doc" />
     <file name="pgsql.htaccess" role="doc" />
@@ -116,12 +117,12 @@ The idea behind this module is to:
     <api>1.0.0</api>
    </version>
    <stability>
-    <release>beta</release>
-    <api>beta</api>
+    <release>stable</release>
+    <api>stable</api>
    </stability>
-   <date>2011-10-11</date>
+   <date>2012-03-08</date>
    <license uri="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License (GPL) Version 3</license>
-   <notes>Initial release</notes>
+   <notes>(see https://github.com/idiap/php-geremo for changelog)</notes>
   </release>
  </changelog>
 </package>
