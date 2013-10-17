@@ -903,6 +903,7 @@ class GEREMO
   public function rawCaptcha()
   {
     // Load PEAR::Text_CAPTCHA extension
+    require_once 'PEAR.php';
     require_once 'Text/CAPTCHA.php';
 
     try
@@ -932,7 +933,7 @@ class GEREMO
 
       // Send Captcha image (as PNG)
       // ... create image object
-      $oImage = $oCaptcha->getCAPTCHAAsPNG();
+      $oImage = $oCaptcha->getCAPTCHA();
       if( PEAR::isError( $oImage ) )
       {
         trigger_error( '['.__METHOD__.'] Failed to generate captcha image; '.$oImage->getMessage(), E_USER_WARNING );
@@ -1058,6 +1059,7 @@ class GEREMO
   private function sendMail( $sTemplate, $sSender, $sRecipients, $asVariables = null, $asHeaders = null )
   {
     // Load PEAR::Mail and PEAR::Mail_Mime extensions
+    require_once 'PEAR.php';
     require_once 'Mail.php';
     require_once 'Mail/mime.php';
 
