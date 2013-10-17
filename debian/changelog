@@ -1,3 +1,9 @@
+php-geremo (1.0.3) UNRELEASED; urgency=low
+
+  * New upstream version
+
+ -- Cedric Dufour <cedric.dufour@idiap.ch>  Thu, 17 Oct 2013 13:14:10 +0200
+
 php-geremo (1.0.2) UNRELEASED; urgency=low
 
   * New upstream version
