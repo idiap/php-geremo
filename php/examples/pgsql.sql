@@ -23,9 +23,24 @@ CREATE TABLE tb_GEREMO_Account (
   phone varchar(50),
   fax varchar(50),
   created timestamp NOT NULL DEFAULT( CURRENT_TIMESTAMP ), -- forced via trigger
-  updated timestamp NOT NULL DEFAULT( CURRENT_TIMESTAMP )  -- forced via trigger
+  updated timestamp NOT NULL DEFAULT( CURRENT_TIMESTAMP ), -- forced via trigger
+  accessed timestamp
   blocked timestamp
 );
+
+--GRANT SELECT ON tb_GEREMO_Account TO "geremo-auth";
+
+CREATE TABLE tb_GEREMO_Log (
+  username varchar(50) NOT NULL,
+  accessed timestamp NOT NULL,
+  uri varchar(500),
+  ip varchar(50)
+);
+-- ... indexes
+CREATE INDEX ON tb_GEREMO_Log(username);
+CREATE INDEX ON tb_GEREMO_Log(accessed);
+
+--GRANT INSERT ON tb_GEREMO_Log TO "geremo-auth";
 
 
 /*
@@ -46,6 +61,23 @@ BEGIN
   RETURN new;
 END
 ' LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+
+CREATE TRIGGER tg__tb_GEREMO_Account__b BEFORE INSERT OR UPDATE OR DELETE ON tb_GEREMO_Account
+FOR EACH ROW EXECUTE PROCEDURE tf__tb_GEREMO_Account__b ();
+
+CREATE OR REPLACE FUNCTION tf__tb_GEREMO_Log__a() RETURNS TRIGGER AS '
+BEGIN
+  IF TG_OP=''INSERT'' THEN
+    UPDATE tb_GEREMO_Account SET accessed=NEW.accessed WHERE username=NEW.username;
+  ELSIF TG_OP=''DELETE'' THEN
+    RETURN old;
+  END IF;
+  RETURN new;
+END
+' LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+
+CREATE TRIGGER tg__tb_GEREMO_Log__a BEFORE INSERT OR UPDATE OR DELETE ON tb_GEREMO_Log
+FOR EACH ROW EXECUTE PROCEDURE tf__tb_GEREMO_Log__a ();
 
 
 /*
@@ -112,6 +144,8 @@ BEGIN
   RETURN FOUND;
 END
 ' LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+
+--GRANT EXECUTE ON FUNCTION fn_GEREMO_Register(text, text, text, text, text, text, text, text, text, text, text, text, text, text, text, text) TO "geremo-register";
 
 CREATE OR REPLACE FUNCTION fn_GEREMO_Block(
   text
