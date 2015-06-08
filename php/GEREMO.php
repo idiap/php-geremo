@@ -1303,7 +1303,7 @@ class GEREMO
         }
         else
         {
-          trigger_error( '['.__METHOD__.'] Failed to query database', E_USER_WARNING );
+          trigger_error( '['.__METHOD__.'] Failed to query database; '.$e->getMessage(), E_USER_WARNING );
         }
         throw new Exception( $this->getText( 'error:internal_error' ) );
       }
