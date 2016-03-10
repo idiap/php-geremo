@@ -1,3 +1,12 @@
+php-geremo (1.0.4) UNRELEASED; urgency=low
+
+  - Improved error logging verbosity
+  - Fixed PostgreSQL exmaple permissions
+  - Added PostgreSQL activity logging resources
+  - Added git2changelog tool
+
+ -- Cedric Dufour <cedric.dufour@idiap.ch>  Tue, 08 Mar 2016 12:10:08 +0100
+
 php-geremo (1.0.3) UNRELEASED; urgency=low
 
   * New upstream version
